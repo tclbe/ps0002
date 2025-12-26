@@ -1,0 +1,211 @@
+---
+title: "PS0002 Tut 1 Notes"
+author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
+date: "26 Dec 2025"
+output:
+  html_document:
+    keep_md: true
+    toc: true
+    toc_float: true
+  pdf_document:
+    df_print: tibble
+    template: ../eisvogel.latex
+toc: true
+toc-own-page: true
+numbersections: true
+papersize: a4
+geometry:
+- top=25mm
+- left=25mm
+- right=25mm
+- bottom=25mm
+- headsep=4mm
+- footskip=10mm
+---
+
+# Introduction to R
+
+In PS0001, you learnt Python and its syntax.
+In this module, we use another language, R.
+Generally speaking, R was built for statistical analysis, with many built-in functions.
+Similar functionality in Python must be imported from another library.
+
+Why use R over Python?
+Well, it's just a different language.
+
+Many of the same concepts overlap - variables, functions, iteration, etc.
+However, a slight difference is that unlike in PS0001, we will actually be much more hands-on with the running of our code - we are interested in running a function, and seeing its output, immediately.
+
+# The `cat()` and `print()` functions
+
+The `cat()` function (short for con`cat`enate) and the `print()` function can be used to display information to the user.
+Both, however, work slightly differently.
+
+We will not frequently use the `cat()` or `print()` functions, because we generally see the output immediately.
+
+```r
+cat('abc')
+print('xyz')
+```
+
+# Assignment operator (`<-` or `=`)
+
+`<-` and `=` can both be used to assign values to variables in R. For consistency I will just use `<-`.
+
+```{r}
+x = 1
+y <- 2
+cat('x has the value', x, ', y has the value', y)
+```
+
+# Vectors (`c()`)
+Vectors are created using the `c()` function.
+When a range of consecutive numbers is desired, we can also use `start:end` to get a vector of all numbers
+between `start` and `end`, inclusive of both ends.
+
+```{r}
+v1 <- c(1, 3, 5, 7, 9, 11)
+v2 <- 1:6*2   # create the vector (1, 2, 3, 4, 5, 6) and multiply each element by 2.
+cat('v1 has the value', v1, ', v2 has the value', v2)
+```
+
+You can see the length of a vector using `length()`:
+
+```{r}
+cat('v1 has length', length(v1))
+```
+
+# Matrices
+Matrices in R are similar to matrices in math.
+They can be created in several ways.
+
+## `dim()`
+`dim()` tells us the dimension of an object.
+A vector has no dimension, only length.
+We can assign a dimension to a vector to make it a matrix.
+
+```{r}
+dim(v1)
+dim(v1) <- c(3, 2)
+v1      # now a 3x2 matrix
+```
+
+## `matrix()`
+We can create matrices directly with `matrix()`.
+Specify the parameter(s) `ncol`, `nrow`, and/or `byrow` to determine how the matrix should be created.
+
+```{r}
+matrix(1:10, nrow = 2)
+matrix(1:10, ncol = 2)
+matrix(1:10, ncol = 5, byrow=T)
+```
+
+## `rbind()` and `cbind()`
+Matrices can also be made using `rbind()` and `cbind()` on vectors or other matrices.
+
+```{r}
+a <- matrix(1:10, nrow = 2)
+b <- matrix(11:20, nrow = 2)
+cbind(a, b)
+rbind(a, b)
+
+rbind(1:5, 6:10)
+```
+
+# Data frames (`data.frame`)
+Data frames are just matrices with column names.
+They can be created with the `data.frame()` function on any matrix or vector.
+
+```{r}
+df1 <- data.frame(1:5)
+df1
+a
+df2 <- data.frame(a)
+df2
+```
+
+The rows are individual observations, the columns are the data of each observation.
+By default, the columns are assigned the names X1, X2, ..., Xn, for each column,
+and the rows are assigned numerical labels.
+We can see the column names, and assign new names using the `names()` function.
+
+```{r}
+names(df2)
+names(df2) <- c('age', 'height', 'weight', 'grade', 'money')
+df2
+```
+
+We can also change the row names if desired using `row.names()`.
+
+```{r}
+row.names(df2)
+row.names(df2) <- c('caleb', 'you')
+df2
+```
+
+Now, to describe this data frame,
+I will say that this data frame has 2 observations (rows), and 5 data points (columns) for each observation.
+The interpretation of this data frame with the row and column names should come naturally.
+
+In this course, in general, we will not be creating data frames or matrices directly.
+Instead, most data will be read using a `read` function, which we will see in the lab, or imported from another library, which we will see in a few weeks.
+
+# Indexing vectors, matrices, and data frames
+To get a single value in a vector, matrix, or data frame, we can use indexing with square brackets `[]`.
+Indexing in R is extremely similar to indexing in Python,
+but unlike Python, which is 0-indexed, R is 1-indexed, so the first entry in a list always has index 1.
+Vectors in R are analogous to lists in Python (that do not contain other lists),
+and require only one indexing.
+
+```{r}
+x <- 1:5*10
+x
+x[2]            # Get the second element
+```
+
+For matrices and data frames, as they have two dimensions (rows and columns), we have the option to get rows, columns, or individual cells.
+The square bracket notation is the same, but we now have the option to index along the rows or columns or both.
+Take note of the below examples, noting the presence of the commas and blank entries.
+
+```{r}
+df2['age']      # with no comma, selects columns, return as data frame.
+                # or with comma, first is row, second is column.
+df2[, 'age']    # selects all rows, and only column 'age', return as vector.
+df2['caleb',]   # selects only row 'caleb', and all columns, return as data frame.
+```
+
+In general, the indexing is done as `thing_to_index[rows, columns]`.
+Columns in data frames can also be accessed using a `$` operator.
+
+```{r}
+df2$age         # equivalent to df2[, 'age'], return as vector.
+```
+
+To select multiple rows or multiple columns, you can pass in vectors as indexes.
+Selections can also be made using numerical indices.
+You can see that the below have the exact same output as using the named indices above.
+
+```{r}
+df2[1:3]
+df2[, c(2, 5)]
+df2[1, ]
+```
+
+Indexing for vectors and matrices is extremely similar.
+As an exercise, index the following values from the below matrix, using the `c()` function if necessary.
+
+```{r}
+m1 <- matrix(1:20, nrow=4, byrow=T)
+m1
+
+# Index the following from the matrix m1:
+# The entry 13
+# The entries 1, 2, 3, 4, and 5.
+# The entries 4, 9, 14, and 19.
+# The entries 2, 7.
+# The entries 1, 3, 16, and 18.
+
+# For example, to index the entry 12
+# which is the 3rd row, 2nd column.
+m1[3, 2]
+```

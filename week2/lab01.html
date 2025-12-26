@@ -11,9 +11,9 @@
 
 <meta name="author" content="Caleb Tay (caleb.tay@ntu.edu.sg)" />
 
-<meta name="date" content="2025-01-17" />
+<meta name="date" content="2025-12-26" />
 
-<title>PS0002 Tut 1 Notes</title>
+<title>PS0002 Lab 1 Notes</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1479,214 +1479,294 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">PS0002 Tut 1 Notes</h1>
+<h1 class="title toc-ignore">PS0002 Lab 1 Notes</h1>
 <h4 class="author">Caleb Tay (<a href="mailto:caleb.tay@ntu.edu.sg" class="email">caleb.tay@ntu.edu.sg</a>)</h4>
-<h4 class="date">17 Jan 2025</h4>
+<h4 class="date">26 Dec 2025</h4>
 
 </div>
 
 
-<div id="assignment-operator---or" class="section level1">
-<h1>Assignment operator (<code>&lt;-</code> or <code>=</code>)</h1>
-<p><code>&lt;-</code> and <code>=</code> can both be used as assignment
-in R. For consistency I will just use <code>&lt;-</code>.</p>
-<pre class="r"><code>x = 1
-y &lt;- 2
-cat(&#39;x has the value&#39;, x, &#39;, y has the value&#39;, y)</code></pre>
-<pre><code>## x has the value 1 , y has the value 2</code></pre>
+<div id="task-1" class="section level1">
+<h1>Task 1</h1>
+<div id="reading-data-from-files" class="section level2">
+<h2>Reading data from files</h2>
+<p>For the most part, in this course, we will either get data from other
+packages in R, or read data from files. It is important to be familiar
+with how to import data, and generally there are only two (three)
+functions to be aware of, <code>read.fwf()</code> and
+<code>read.table()</code> (and <code>read.csv()</code>, which is really
+just <code>read.table()</code> with some preset settings).</p>
+<p>In general, the first step is to be aware what is the structure of
+the data. Open the data file you want to import and study its structure.
+Does it have a header? Are the individual data points in an observation
+separated by anything? And in general, most files (almost all) should
+have one observation in one row.</p>
 </div>
-<div id="vectors-c" class="section level1">
-<h1>Vectors (<code>c()</code>)</h1>
-<p>Vectors are created using the <code>c()</code> function. When a range
-of consecutive numbers is desired, we can also use
-<code>start:end</code> to get a vector of all numbers between
-<code>start</code> and <code>end</code>, inclusive of both ends.</p>
-<pre class="r"><code>v1 &lt;- c(1, 3, 5, 7, 9, 11)
-v2 &lt;- 1:6*2   # create the vector (1, 2, 3, 4, 5, 6) and multiply each element by 2.
-cat(&#39;v1 has the value&#39;, v1, &#39;, v2 has the value&#39;, v2)</code></pre>
-<pre><code>## v1 has the value 1 3 5 7 9 11 , v2 has the value 2 4 6 8 10 12</code></pre>
-<p>You can see the length of a vector using <code>length()</code></p>
-<pre class="r"><code>cat(&#39;v1 has length&#39;, length(v1))</code></pre>
-<pre><code>## v1 has length 6</code></pre>
+<div id="the-working-directory-getwd-and-setwd" class="section level2">
+<h2>The working directory (<code>getwd()</code> and
+<code>setwd()</code>)</h2>
+<p>If you encounter any file-related errors (e.g. file not found) when
+trying to read a file, the first thing you should check is your working
+directory. Most problems will likely be solved if you check your working
+directory, because <strong>any functions that require a file (filepath)
+will try to find the file (filepath) relative to your current working
+directory.</strong></p>
+<p>To see your current working directory, use <code>getwd()</code>. You
+may, for example, get the following response:
+<code>C:/Users/caleb/Documents</code>. Thus, if I run
+<code>read.table(&quot;lab1fixed.txt&quot;)</code>, it will look for the file at
+<code>C:/Users/caleb/Documents/lab1fixed.txt</code>. So, check if the
+file is where you intend it to be, or check that your working directory
+is where you intend it to be.</p>
+<p>To change your working directory, you can use <code>setwd()</code>
+and pass it a path. In RStudio, use the Files tab, click the 3 dots at
+the right of the panel and navigate to the folder with your files. Click
+the ‘More’ button or cog icon, and find the ‘Set As Working Directory’
+option. Both methods are equivalent, as they ultimately use the
+<code>setwd()</code> function.</p>
 </div>
-<div id="matrices" class="section level1">
-<h1>Matrices</h1>
-<p>Matrices in R are similar to matrices in math. They can be created in
-several ways.</p>
-<div id="dim" class="section level2">
-<h2><code>dim()</code></h2>
-<p><code>dim()</code> tells us the dimension of an object. A vector has
-no dimension. We can assign a dimension to a vector to make it a
-matrix.</p>
-<pre class="r"><code>dim(v1)</code></pre>
-<pre><code>## NULL</code></pre>
-<pre class="r"><code>dim(v1) &lt;- c(3, 2)
-v1      # now a 3x2 matrix</code></pre>
-<pre><code>##      [,1] [,2]
-## [1,]    1    7
-## [2,]    3    9
-## [3,]    5   11</code></pre>
+<div id="importing-fixed-width-format-files-read.fwf" class="section level2">
+<h2>Importing fixed width format files <code>read.fwf()</code></h2>
+<p>Open and observe the format of <code>lab1fixed.txt</code>. As the
+name suggests, it is a <strong>fixed-width format</strong> file, with no
+separators between each data point in a single observation. Instead,
+some number of columns corresponds to some information about a single
+observation, with the details for this file provided in the lab
+sheet.</p>
+<p>To import this file into R, use the <code>read.fwf()</code> command.
+To understand what the function does and what parameters it can take, we
+can use the <code>?</code> operator, i.e. <code>?read.fwf</code>. Read
+through the Description, Usage, and Arguments sections to understand how
+to use the function. Some help pages may also provide some example usage
+at the bottom of the page.</p>
+<pre class="r"><code>lab1 &lt;- read.fwf(&#39;lab1fixed.txt&#39;, widths = c(3, 1, 3, 2, 1),
+   col.names = c(&quot;id&quot;, &quot;gender&quot;, &quot;height&quot;, &quot;weight&quot;, &quot;siblings&quot;))</code></pre>
 </div>
-<div id="matrix" class="section level2">
-<h2><code>matrix()</code></h2>
-<p>We can create matrices directly with <code>matrix()</code>. Specify
-the parameter(s) <code>ncol</code>, <code>nrow</code>, and/or
-<code>byrow</code> to determine how the matrix should be created.</p>
-<pre class="r"><code>matrix(1:10, nrow = 2)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10</code></pre>
-<pre class="r"><code>matrix(1:10, ncol = 2)</code></pre>
-<pre><code>##      [,1] [,2]
-## [1,]    1    6
-## [2,]    2    7
-## [3,]    3    8
-## [4,]    4    9
-## [5,]    5   10</code></pre>
-<pre class="r"><code>matrix(1:10, ncol = 5, byrow=T)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10</code></pre>
-</div>
-<div id="rbind-and-cbind" class="section level2">
-<h2><code>rbind()</code> and <code>cbind()</code></h2>
-<p>Matrices can also be made using <code>rbind()</code> and
-<code>cbind()</code> on vectors or other matrices.</p>
-<pre class="r"><code>a &lt;- matrix(1:10, nrow = 2)
-b &lt;- matrix(11:20, nrow = 2)
-cbind(a, b)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## [1,]    1    3    5    7    9   11   13   15   17    19
-## [2,]    2    4    6    8   10   12   14   16   18    20</code></pre>
-<pre class="r"><code>rbind(a, b)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10
-## [3,]   11   13   15   17   19
-## [4,]   12   14   16   18   20</code></pre>
-<pre class="r"><code>rbind(1:5, 6:10)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10</code></pre>
-</div>
-</div>
-<div id="data-frames-data.frame" class="section level1">
-<h1>Data frames (<code>data.frame</code>)</h1>
-<p>Data frames are just matrices with column names. They can be created
-with the <code>data.frame()</code> function on any matrix or vector.</p>
-<pre class="r"><code>df1 &lt;- data.frame(1:5)
+<div id="filtering-entries" class="section level2">
+<h2>Filtering entries</h2>
+<p>To filter the entries, we can use a boolean test with indexing. As a
+mini example, to demonstrate what occurs when filtering:</p>
+<pre class="r"><code>df1 &lt;- data.frame(matrix(1:10, nrow=5))
 df1</code></pre>
-<pre><code>##   X1.5
-## 1    1
-## 2    2
-## 3    3
-## 4    4
-## 5    5</code></pre>
-<pre class="r"><code>a</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10</code></pre>
-<pre class="r"><code>df2 &lt;- data.frame(a)
-df2</code></pre>
-<pre><code>##   X1 X2 X3 X4 X5
-## 1  1  3  5  7  9
-## 2  2  4  6  8 10</code></pre>
-<p>The rows are individual observations, the columns are the data of
-each observation. By default, the columns are assigned the names X1, X2,
-…, Xn, for each column, and the rows are assigned numerical labels. We
-can see the column names, and assign new names using the
-<code>names()</code> function.</p>
-<pre class="r"><code>names(df2)</code></pre>
-<pre><code>## [1] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;X4&quot; &quot;X5&quot;</code></pre>
-<pre class="r"><code>names(df2) &lt;- c(&#39;age&#39;, &#39;height&#39;, &#39;weight&#39;, &#39;grade&#39;, &#39;money&#39;)
-df2</code></pre>
-<pre><code>##   age height weight grade money
-## 1   1      3      5     7     9
-## 2   2      4      6     8    10</code></pre>
-<p>We can also change the row names if desired using
-<code>row.names()</code>.</p>
-<pre class="r"><code>row.names(df2)</code></pre>
-<pre><code>## [1] &quot;1&quot; &quot;2&quot;</code></pre>
-<pre class="r"><code>row.names(df2) &lt;- c(&#39;caleb&#39;, &#39;you&#39;)
-df2</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9
-## you     2      4      6     8    10</code></pre>
-<p>Now, to describe this data frame, I will say that this data frame has
-2 observations (rows), and 5 data points (columns) for each observation.
-The interpretation of this data frame with the row and column names
-should come naturally.</p>
-<p>In this course, in general, we will not be creating data frames or
-matrices directly. Instead, most data will be read using a
-<code>read</code> function, which we will see in the lab.</p>
+<pre><code>##   X1 X2
+## 1  1  6
+## 2  2  7
+## 3  3  8
+## 4  4  9
+## 5  5 10</code></pre>
+<pre class="r"><code>isodd &lt;- df1$X1 %% 2 == 1   # %% is modulo operator, == is equality test operator.
+isodd         # vector of T and F values, depending on whether X1 was odd or not.</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE  TRUE</code></pre>
+<pre class="r"><code>df1[isodd, ]  # select only the entries which correspond to T in isodd, i.e. the odd entries.</code></pre>
+<pre><code>##   X1 X2
+## 1  1  6
+## 3  3  8
+## 5  5 10</code></pre>
+<p>We can combine defining the filter criteria and applying it into one
+line.</p>
+<pre class="r"><code>lab1m &lt;- lab1[lab1$gender == &quot;M&quot;, ]
+dim(lab1m) # and look at the first entry (rows)</code></pre>
+<pre><code>## [1] 48  5</code></pre>
+<pre class="r"><code>nrow(lab1m) # returns only the number of rows</code></pre>
+<pre><code>## [1] 48</code></pre>
+<p>And thus we conclude that there are 48 males in the data frame
+<code>lab1</code>.</p>
 </div>
-<div id="indexing-vectors-matrices-and-data-frames" class="section level1">
-<h1>Indexing vectors, matrices, and data frames</h1>
-<p>To get a single value in a vector, matrix, or data frame, we can use
-indexing with square brackets <code>[]</code>. Indexing in R is
-extremely similar to indexing in Python, but unlike Python, which is
-0-indexed, R is 1-indexed, so the first entry in a list always has index
-1. Vectors in R are analogous to lists in Python (that do not contain
-other lists), and require only one indexing.</p>
-<pre class="r"><code>x &lt;- 1:5*10
-x[2]            # Get the second element</code></pre>
-<pre><code>## [1] 20</code></pre>
-<p>For matrices and data frames, as they have two dimensions (rows and
-columns), we have the option to get rows, columns, or individual cells.
-The square bracket notation is the same, but we now have the option to
-index along the rows or columns or both. Take note of the below
-examples, noting the presence of the commas and blank entries.</p>
-<pre class="r"><code>df2[&#39;age&#39;]      # with no comma, selects columns, return as data frame.</code></pre>
-<pre><code>##       age
-## caleb   1
-## you     2</code></pre>
-<pre class="r"><code>                # or with comma, first is row, second is column.
-df2[, &#39;age&#39;]    # selects all rows, and only column &#39;age&#39;, return as vector.</code></pre>
-<pre><code>## [1] 1 2</code></pre>
-<pre class="r"><code>df2[&#39;caleb&#39;,]   # selects only row &#39;caleb&#39;, and all columns, return as data frame.</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9</code></pre>
-<p>In general, the indexing is done as
-<code>thing_to_index[rows, columns]</code>. Columns in data frames can
-also be accessed using a <code>$</code> operator.</p>
-<pre class="r"><code>df2$age         # equivalent to df2[, &#39;age&#39;], return as vector.</code></pre>
-<pre><code>## [1] 1 2</code></pre>
-<p>To select multiple rows or multiple columns, you can pass in vectors
-as indexes. Selections can also be made using numerical indices. You can
-see that the below have the exact same output as using the named indices
-above.</p>
-<pre class="r"><code>df2[1:3]</code></pre>
-<pre><code>##       age height weight
-## caleb   1      3      5
-## you     2      4      6</code></pre>
-<pre class="r"><code>df2[, c(2, 5)]</code></pre>
-<pre><code>##       height money
-## caleb      3     9
-## you        4    10</code></pre>
-<pre class="r"><code>df2[1, ]</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9</code></pre>
-<p>Indexing for vectors and matrices is extremely similar. As an
-exercise, index the following values from the below matrix, using the
-<code>c()</code> function if necessary.</p>
-<pre class="r"><code>m1 &lt;- matrix(1:20, nrow=4, byrow=T)
-m1</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10
-## [3,]   11   12   13   14   15
-## [4,]   16   17   18   19   20</code></pre>
-<pre class="r"><code># Index the following from the matrix m1:
-# The entry 13
-# The entries 1, 2, 3, 4, and 5.
-# The entries 4, 9, 14, and 19.
-# The entries 2, 7.
-# The entries 1, 3, 16, and 18.
+<div id="importing-not-fixed-width-format-files-read.table" class="section level2">
+<h2>Importing not fixed width format files
+(<code>read.table()</code>)</h2>
+<p>Now, look at <code>lab1test.txt</code> and observe its format. There
+are two columns, with entries separated by a space character. The first
+row are the headers of the table.</p>
+<p>The most general function available to us is
+<code>read.table()</code>. Again, look at the documentation of it using
+<code>?read.table</code>. There are many options to it, but the most
+important would be the <code>header</code> and <code>sep</code>
+parameters.</p>
+<pre class="r"><code>lab1test &lt;- read.table(&#39;lab1test.txt&#39;, header=T)</code></pre>
+<p>Try experimenting with setting <code>header=F</code> and see what it
+does to the resulting data frame.</p>
+</div>
+<div id="merging-data-frames" class="section level2">
+<h2>Merging data frames</h2>
+<p>The <code>lab1test</code> data frame has column headers
+<code>id</code> and <code>test</code>. The <code>id</code> column in
+<code>lab1test</code> corresponds to the <code>id</code> column in
+<code>lab1</code> and extends the data. Thus, we want to merge the data
+frames based on the <code>id</code> column, which we can do using
+<code>merge()</code>. Again, you can use <code>?merge</code> to
+understand its usage. In this case, it is a simple use of the function,
+but we can specify on what columns it merges on with the <code>by</code>
+parameter.</p>
+<pre class="r"><code>lab1merge &lt;- merge(lab1, lab1test)
+dim(lab1merge)</code></pre>
+<pre><code>## [1] 120   6</code></pre>
+<p>To complete the rest of part (c), it is another filtering exercise,
+this time on the heights.</p>
+<pre class="r"><code>lab1merge[lab1merge$height &gt; 182, &#39;test&#39;]</code></pre>
+<pre><code>## [1] 55 76 54</code></pre>
+<p>From which we can see that there are only three individuals with
+height greater than 182.</p>
+</div>
+<div id="removing-a-row-from-a-data-frame" class="section level2">
+<h2>Removing a row from a data frame</h2>
+<p>Removing a row is similar to filtering, and we must understand what
+criteria we want to filter or remove on. Since we want to remove the
+record related to subject 211, i.e. with <code>id</code> 211, we can
+filter using the <code>id</code> column, taking everything <em>but ID
+211</em>.</p>
+<pre class="r"><code>lab1remo &lt;- lab1merge[lab1merge$id != 211,]
+dim(lab1remo)</code></pre>
+<pre><code>## [1] 119   6</code></pre>
+<p>From which, comparing with the dimensions of <code>lab1merge</code>,
+we can see that one entry was indeed removed.</p>
+</div>
+<div id="modifying-a-data-frame-entry" class="section level2">
+<h2>Modifying a data frame entry</h2>
+<p>Modifying a data frame entry is mostly a job of indexing and
+filtering, then assigning the new data. Similar to the above, we want to
+change the weight of <code>id</code> 211 from 60 to 80, so:</p>
+<pre class="r"><code>lab1[lab1$id == 211,]</code></pre>
+<pre><code>##     id gender height weight siblings
+## 11 211      M    171     60        3</code></pre>
+<pre class="r"><code>lab1[lab1$id == 211, &#39;weight&#39;] = 80
+lab1[lab1$id == 211,]</code></pre>
+<pre><code>##     id gender height weight siblings
+## 11 211      M    171     80        3</code></pre>
+</div>
+<div id="sorting-a-data-frame-order" class="section level2">
+<h2>Sorting a data frame (<code>order()</code>)</h2>
+<p>To sort a data frame, we can use the <code>order()</code> function,
+which just returns a numerical ranking to the data. For example:</p>
+<pre class="r"><code>x &lt;- c(100, 200, 150, 175, 125)
+x[c(3,3,2,4,4)] # get the 3rd, 3rd, 2nd, 4th, 4th entries.</code></pre>
+<pre><code>## [1] 150 150 200 175 175</code></pre>
+<pre class="r"><code>order(x) # 1, 5, 3, 4, 2</code></pre>
+<pre><code>## [1] 1 5 3 4 2</code></pre>
+<pre class="r"><code>x &lt;- x[order(x)]
+x</code></pre>
+<pre><code>## [1] 100 125 150 175 200</code></pre>
+<p>In earlier exercises, we used a boolean condition (true or false,
+based on some criteria) to determine whether to keep or discard a row
+(observation). We can also use a numerical index to determine what
+entries to take, as in line 2 in the above code block.</p>
+<p>You can see that <code>order()</code> gives the ordering of the
+numbers from smallest (1) to largest (5). So, when we order
+<code>x</code> by this sequence of indexes, we will get the elements in
+<code>x</code> ordered from smallest to largest.</p>
+<p>In part (f), we are also asked to filter the data. In this case, it
+does not matter in which order we do it (filter then order, or order
+then filter). To simplify the ordering, we will use the
+<code>decreasing</code> parameter in <code>order()</code> to get it to
+order it in descending order, i.e. largest to smallest.
+<code>order()</code> also only can sort <strong>vectors, and not
+dataframes/matrices</strong>. If you experience an error when using
+<code>order()</code>, check that it is <strong>not a
+dataframe/matrix</strong>.</p>
+<pre class="r"><code>lab1f &lt;- lab1merge[lab1merge$gender == &#39;F&#39;,]    # filter the data
+ordering &lt;- order(lab1f$height, decreasing=T)   # get the height order vector
+lab1ordered &lt;- lab1f[ordering,]
+lab1ordered[2, c(&#39;height&#39;, &#39;weight&#39;, &#39;test&#39;)]   # get the second entry and relevant columns</code></pre>
+<pre><code>##    height weight test
+## 73    174     64   57</code></pre>
+</div>
+</div>
+<div id="task-2" class="section level1">
+<h1>Task 2</h1>
+<p>We will define the matrices <span class="math inline">\(X\)</span>
+and <span class="math inline">\(Y\)</span> first, using
+<code>rep()</code> and <code>seq()</code> for <span class="math inline">\(X\)</span>.</p>
+<p><code>rep()</code> repeats what is passed to it, and
+<code>seq()</code> functions essentially like the <code>range()</code>
+function in Python, but is inclusive of the end number. Again, to read
+more about it, use the <code>?</code> operator on them.</p>
+<pre class="r"><code>X &lt;- cbind(rep(1, 4), seq(1,7,2)) # rep() repeats `1` 4 times, seq() is similar to range() in Python
+Y &lt;- cbind(c(4, 6, 13, 20)) # make it a matrix! without cbind, Y will just be a vector.</code></pre>
+<p><span class="math inline">\(\hat\beta\)</span> can then be calculated
+easily.</p>
+<pre class="r"><code>bhat &lt;- solve((t(X) %*% X)) %*% t(X) %*% Y
+bhat</code></pre>
+<pre><code>##       [,1]
+## [1,] -0.25
+## [2,]  2.75</code></pre>
+</div>
+<div id="task-3" class="section level1">
+<h1>Task 3</h1>
+<div id="defining-functions" class="section level2">
+<h2>Defining functions</h2>
+<p>Functions in R are defined with the <code>function</code> keyword and
+are assigned to variable names.</p>
+<pre class="r"><code>moment &lt;- function(x, power=1) {
+  if (power == 1) { return(mean(x)) }
+  else { return(mean( (x - mean(x))**power )) }
+}
 
-# For example, to index the entry 12
-# which is the 3rd row, 2nd column.
-m1[3, 2]</code></pre>
-<pre><code>## [1] 12</code></pre>
+moment(lab1$height)</code></pre>
+<pre><code>## [1] 165.8667</code></pre>
+<pre class="r"><code>moment(lab1$height,2)</code></pre>
+<pre><code>## [1] 75.98222</code></pre>
+</div>
+</div>
+<div id="task-4" class="section level1">
+<h1>Task 4</h1>
+<p>This is the function defined on slide 55. By default, functions in R
+return the last line run in the function, if it does not encounter a
+<code>return</code> statement first. You may also choose to explicitly
+return and end the function with a <code>return()</code> call.</p>
+<pre class="r"><code>f &lt;- function(x) { return(-2*x**2 - 5*x + 7) }</code></pre>
+<p>Implementing the bisection algorithm:</p>
+<pre class="r"><code>root_bisection_algorithm &lt;- function(f, xmin, xmax) {
+  if (xmin &gt; xmax) (return(&quot;xmin &gt; xmax! please fix!&quot;))
+  
+  xmid &lt;- (xmin + xmax) / 2
+  cat(&quot;xmin =&quot;, xmin, &quot;xmax =&quot;, xmax, &quot;\n&quot;)
+
+  while (abs(f(xmid)) &gt; 10**-3 &amp; abs(xmin - xmax) &gt; 10**-3 ) {
+    if (f(xmin) * f(xmid) &lt; 0) { xmax = xmid }
+    else { xmin = xmid }
+    xmid &lt;- (xmin + xmax) / 2
+    
+    cat(&quot;xmin =&quot;, xmin, &quot;xmax =&quot;, xmax, &quot;\n&quot;)
+  }
+  
+  if (abs(f(xmid)) &gt; 10**-3) { return(&quot;no root found in interval!&quot;)}
+  xmid
+}
+
+root_bisection_algorithm(f, -4, 0)</code></pre>
+<pre><code>## xmin = -4 xmax = 0 
+## xmin = -4 xmax = -2 
+## xmin = -4 xmax = -3</code></pre>
+<pre><code>## [1] -3.5</code></pre>
+<pre class="r"><code>root_bisection_algorithm(f, -5, 0)</code></pre>
+<pre><code>## xmin = -5 xmax = 0 
+## xmin = -5 xmax = -2.5 
+## xmin = -3.75 xmax = -2.5 
+## xmin = -3.75 xmax = -3.125 
+## xmin = -3.75 xmax = -3.4375 
+## xmin = -3.59375 xmax = -3.4375 
+## xmin = -3.515625 xmax = -3.4375 
+## xmin = -3.515625 xmax = -3.476562 
+## xmin = -3.515625 xmax = -3.496094 
+## xmin = -3.505859 xmax = -3.496094 
+## xmin = -3.500977 xmax = -3.496094 
+## xmin = -3.500977 xmax = -3.498535 
+## xmin = -3.500977 xmax = -3.499756 
+## xmin = -3.500366 xmax = -3.499756</code></pre>
+<pre><code>## [1] -3.500061</code></pre>
+<pre class="r"><code>root_bisection_algorithm(f, -10, -9)</code></pre>
+<pre><code>## xmin = -10 xmax = -9 
+## xmin = -9.5 xmax = -9 
+## xmin = -9.25 xmax = -9 
+## xmin = -9.125 xmax = -9 
+## xmin = -9.0625 xmax = -9 
+## xmin = -9.03125 xmax = -9 
+## xmin = -9.015625 xmax = -9 
+## xmin = -9.007812 xmax = -9 
+## xmin = -9.003906 xmax = -9 
+## xmin = -9.001953 xmax = -9 
+## xmin = -9.000977 xmax = -9</code></pre>
+<pre><code>## [1] &quot;no root found in interval!&quot;</code></pre>
 </div>
 
 

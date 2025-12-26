@@ -1,1 +1,9 @@
 .DS_STORE
+
+eisvogel.latex
+
+*/*
+!*/*.pdf
+!*/*.html
+!*/*.Rmd
+*/*-inclass.Rmd

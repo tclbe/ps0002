@@ -5,9 +5,8 @@ At the top-right corner of the file preview, there is a download icon, also show
 
 # HTML links
 
-
-* [Tutorial 1](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut01.html)
-* [Lab 1](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab01.html)
+* [Tutorial 1](https://tclbe.github.io/ps0002/week2/tut01.html)
+* [Lab 1](https://tclbe.github.io/ps0002/week2/lab01.html)
 
 * [Tutorial 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut02.html)
 * [Lab 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab02.html)
