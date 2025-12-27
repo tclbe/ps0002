@@ -3,10 +3,10 @@ At the top-right corner of the file preview, there is a download icon, also show
 
 ![](./download-from-github.png)
 
-# HTML links
+# Links
 
-* [Tutorial 1](https://tclbe.github.io/ps0002/week2/tut01.html)
-* [Lab 1](https://tclbe.github.io/ps0002/week2/lab01.html)
+* Tutorial 1 [rmd](https://tclbe.github.io/ps0002/week2/tut01.Rmd), [html](https://tclbe.github.io/ps0002/week2/tut01.html), [pdf](https://tclbe.github.io/ps0002/week2/tut01.pdf)
+* Lab 1 [rmd](https://tclbe.github.io/ps0002/week2/lab01.Rmd), [html](https://tclbe.github.io/ps0002/week2/lab01.html), [pdf](https://tclbe.github.io/ps0002/week2/lab01.pdf)
 
 * [Tutorial 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut02.html)
 * [Lab 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab02.html)
