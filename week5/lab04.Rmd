@@ -1,0 +1,143 @@
+---
+title: "PS0002 Lab 4 Notes"
+author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
+date: "14 Feb 2025"
+output:
+  pdf_document:
+    df_print: tibble
+    template: ../eisvogel.latex
+  html_document:
+    keep_md: true
+    toc: true
+    toc_float: true
+toc: true
+toc-own-page: true
+numbersections: true
+papersize: a4
+geometry:
+- top=25mm
+- left=25mm
+- right=25mm
+- bottom=25mm
+- headsep=4mm
+- footskip=10mm
+header-includes:
+   - \usepackage{graphicx}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.align="center")
+if (knitr::is_latex_output()){
+  knitr::opts_chunk$set(fig.width=5)
+  knitr::opts_chunk$set(fig.height=2.5)
+}
+```
+
+# Setup
+
+This lab focuses again on the `msleep` dataset and using `dplyr` and `ggplot2`, so import them as necessary.
+
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2)    # includes msleep dataset
+```
+
+# Summary statistics by `vore` groups (`summarise()`)
+
+This is a simple exercise similar to the previous lab and tutorial.
+One thing to note is that `range()` by default is defined to give the minimum and maximum values of a vector.
+Thus you have to compute the range manually, i.e. take the max minus the min value in the vector.
+
+```{r}
+sleep_stats <- msleep %>% filter(!is.na(sleep_total)) %>% group_by(vore) %>%
+  summarise(count=n(), avg_sleep_total = mean(sleep_total),
+            sd_sleep_total = sd(sleep_total),
+            range_sleep_total = max(sleep_total) - min(sleep_total))
+sleep_stats
+```
+
+# Visualising differences in summary statistics (`geom_bar()` or `geom_col()`)
+
+Because we have a limited number of groups and we wish to compare only a single value between each of them, we can use a bar/column chart to visualise the differences.
+I added some colour to make it more fun to look at.
+
+You may think of using the same plot for all three statistics, but you must consider the **scale** and **meaning** when plotting three different types of values on the same plot.
+The means, standard deviations, and ranges are comparible within each type (e.g. mean against mean), but are difficult to understand if not meaningless when compared against each other (e.g. mean against range).
+
+If you used `geom_bar()`, make sure to change the `stat` parameter to be `'identity'`.
+
+We can see that insectivores have the longest average sleep total, as well as the highest standard deviation.
+Carnivores, on the other hand, have a higher range of sleep total.
+
+```{r}
+sleep_stats %>% ggplot() + geom_col(aes(x=vore, y=avg_sleep_total, fill=vore))
+sleep_stats %>% ggplot() + geom_col(aes(x=vore, y=sd_sleep_total, fill=vore))
+sleep_stats %>% ggplot() + geom_col(aes(x=vore, y=range_sleep_total, fill=vore))
+```
+
+Both standard deviation and range may be used as a measure of a dataset's 'dispersion', i.e. their spread.
+The range (max-min) is easily interpretable without any knowledge in statistics.
+
+The standard deviation is a measure of how far an observation is from the mean of the data on average.
+This is an extremely vague and broad definition, sufficient for this course.
+
+Insectivores, having only 5 observations, also have a lower range.
+However, the insectivores' bimodal distribution (two peaks) leads to a higher standard deviation than the carnivores' flatter spread of `sleep_total`, because all the data is far away from the mean.
+
+To see this, let us look closer at the distribution of `sleep_total` among carnivores and insectivores.
+The dashed vertical line indicates the mean of each dataset.
+
+```{r warning=FALSE}
+for (v in c('carni', 'insecti')) {
+  g <- msleep %>% filter(vore == v) %>% ggplot(aes(x=sleep_total)) +
+    geom_density() +
+    geom_histogram(aes(y=after_stat(density)), alpha=0.3, bins=30) +
+    geom_vline(aes(xintercept=mean(sleep_total, na.rm=T)), linetype="dashed") +
+    coord_cartesian(xlim=c(0,22)) +
+    xlim(0, 22) +
+    labs(title=paste(v, "distribution"))
+  print(g)
+}
+```
+
+# Histograms and density plots (`geom_histogram()` and `geom_density()`)
+
+Histograms and density plots help us understand the distribution of a single continuous variable.
+In this case, we are interested in both `sleep_total` and `sleep_rem`.
+
+```{r eval=FALSE}
+ggplot(msleep) + geom_histogram(aes(sleep_total), bins=20)
+ggplot(msleep) + geom_density(aes(sleep_total))
+ggplot(msleep) + geom_histogram(aes(sleep_rem), bins=20, na.rm=T)
+ggplot(msleep) + geom_density(aes(sleep_rem), na.rm=T)
+```
+
+We can also plot the histogram and density plot on the same graph by defining the `y`-axis aesthetic feature to be `after_stat(density)` in `aes()`.
+The `..density..` notation used in the tutorial notes has been deprecated, and replaced with `after_stat(density)`.
+You will (should) see that warning if you are using a sufficiently new version of `ggplot2` when running the code with `..density..` in place of `after_stat(density)`.
+
+```{r}
+ggplot(msleep) +
+  geom_histogram(aes(sleep_total, after_stat(density)), bins=20, alpha=0.3) +
+  geom_density(aes(sleep_total))
+ggplot(msleep) +
+  geom_histogram(aes(sleep_rem, after_stat(density)), bins=20, alpha=0.3, na.rm=T) +
+  geom_density(aes(sleep_rem), na.rm=T)
+```
+
+# Task 4 and 5
+
+The difference between task 4 and 5 is a simple `col=vore` to distinguish between different `vore` groups.
+
+Without distinguishing between `vore` groups, there is no significant relationship between `brainwt` and `rem_ratio`.
+
+Even accounting for different `vore` groups, only carnivores appear to have some positive trend, though with the few data points there are, this is a low-confidence statement.
+The rest of the `vore` groups do not display any significant relationship between `brainwt` and `rem_ratio`.
+
+```{r}
+sleep1 <- msleep %>% filter(brainwt < 0.1) %>%
+  mutate(rem_ratio = sleep_rem/sleep_total) %>%
+  filter(!is.na(rem_ratio))
+ggplot(sleep1) + geom_point(aes(brainwt, rem_ratio, col=vore)) +
+  geom_smooth(aes(brainwt, rem_ratio), method='lm')
+```

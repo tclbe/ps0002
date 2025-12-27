@@ -1,0 +1,290 @@
+---
+title: "PS0002 Tut 4 Notes"
+author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
+date: "14 Feb 2025"
+output:
+  pdf_document:
+    df_print: tibble
+    template: ../eisvogel.latex
+  html_document:
+    keep_md: true
+    toc: true
+    toc_float: true
+toc: true
+toc-own-page: true
+numbersections: true
+papersize: a4
+geometry:
+- top=25mm
+- left=25mm
+- right=25mm
+- bottom=25mm
+- headsep=4mm
+- footskip=10mm
+header-includes:
+   - \usepackage{graphicx}
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.align="center")
+if (knitr::is_latex_output()){
+  knitr::opts_chunk$set(fig.width=5)
+  knitr::opts_chunk$set(fig.height=2.5)
+}
+library(dplyr)
+library(ggplot2)
+```
+
+# Types of variables
+
+Broadly, there are two types of variables that we will be concerned with for now: **numerical** variables and **categorical** variables.
+There are other types that we may encounter in future tutorials.
+
+## Numerical (quantitative)
+
+Numerical variables (also referred to as quantitative variables in the tutorial sheet) are, as the name suggests, numerical, and may be *continuous* or *discrete*.
+For example, the height and weight of someone is a (continuous) numerical variable.
+In the `flights` dataset, the air time and distance are examples of numerical variables.
+Typically, these variables **can be compared** to another variable of the same type.
+(e.g. you can compare weights, heights, etc. to be greater than, less than, equal to another)
+
+```{r}
+flights <- nycflights13::flights
+head(flights$air_time)
+```
+
+There are some variables which **may appear to be numerical** but are not.
+For example, the flight number in the `flights` dataset (`flights$flight`) consists only of numbers, but there is no logical way to compare a flight number to another.
+
+```{r results='hold'}
+head(flights$flight)
+cat("The flight number is an", typeof(flights$flight), end="\n")
+cat("There are", length(unique(flights$flight)), "different flight numbers")
+```
+
+## Categorical (qualitative)
+
+Categorical variables, as a simplified description, are variables that are not numerical.
+In previous tutorials, we have grouped the `flights` dataset by `carrier`, which is a categorical variable (with 16 different carriers).
+The flight number is also a categorical variable.
+
+```{r results='hold'}
+unique(flights$carrier)
+cat(length(unique(flights$carrier)), "unique carriers")
+```
+
+# More plots (`ggplot2` continued)
+
+Last week, we learnt about scatterplots and boxplots briefly.
+We will see them again this week, along with a few new kinds of plots.
+
+# Bar/column plots (`geom_bar()`/`geom_col()`)
+
+Bar/column plots are used to visualise the *difference in values* (or lack thereof), especially with a *smaller number of observations*.
+For example, you could visualise the GDP per capita or population of the 10 ASEAN nations with a bar/column plot.
+The example in the tutorial sheet uses it on **summary statistics** of each carrier's average delay (16 entries).
+
+Typically, bar plots are used to visualise the **count** of observations.
+If you look at the documentation of `geom_bar()`, the default value for the `stat` parameter is `'count'`.
+**This means that typically, `geom_bar()` is used to count the number of observations of a variable in a dataset.**
+
+The notes change this `stat` parameter to `identity` so that `geom_bar()` plots the values that it is passed, i.e. the average departure delays computed.
+Alternatively, `geom_col()` could be used without changing any parameters.
+
+```{r}
+df <- flights %>% group_by(carrier) %>%
+  summarise(avg_delay = mean(dep_delay, na.rm=T))
+
+ggplot(df) + geom_bar(aes(carrier, avg_delay), stat = 'identity')
+ggplot(df) + geom_col(aes(carrier, avg_delay))
+
+# more typical usage of geom_bar where only a single data feature is passed
+# plots the number of flights per carrier, since each row is a flight
+ggplot(flights) + geom_bar(aes(carrier))
+```
+
+# Boxplots (`geom_boxplot()`)
+
+There is nothing significant for me to add on to the boxplots example, apart from reiterating the interpretation of the boxplot - the thick middle line is the median value, and the ends of the boxes are the 75th and 25th percentile.
+
+## Zooming in on a plot (`coord_cartesian()`)
+
+However, to zoom in on the plot, `ylim()` used in the tutorial **removes data from the dataset** that are outside of the bounds you specify, *only for the plot*.
+This is evident when you look at a true zoomed-in version of the data using `coord_cartesian()`.
+
+**You can remove data from your dataset, but you must be aware that you are removing data, and the reasons you are removing that data!**
+
+```{r eval=FALSE}
+g <- flights %>% filter(carrier %in% c("EV","OO", "YV"), !is.na(dep_delay)) %>%
+  ggplot(aes(x=origin, y=dep_delay, fill = carrier)) + geom_boxplot()
+g + labs(title="Original plot")
+g + ylim(0, 100) + labs(title="ylim()")
+g + coord_cartesian(ylim=c(0,100)) + labs(title="coord_cartesian()")
+```
+
+```{r echo=FALSE, warning=FALSE}
+library(cowplot)
+g <- flights %>% filter(carrier %in% c("EV","OO", "YV"), !is.na(dep_delay)) %>%
+  ggplot(aes(x=origin, y=dep_delay, fill = carrier)) + geom_boxplot()
+p0 <- g + labs(title="Original plot")
+p1 <- g + ylim(0, 100) + labs(title="ylim()")
+p2 <- g + coord_cartesian(ylim=c(0,100)) + labs(title="coord_cartesian()")
+
+if (knitr::is_html_output()) {
+  plot_grid(p0, p1, p2, ncol=3)
+} else {
+  print(p0)
+  print(p1)
+  print(p2)
+}
+
+```
+
+# Histograms (`geom_histogram()`) and density plots (`geom_density()`)
+
+Histograms and density plots are closely related, but not exactly the same.
+They both are meant to show the **distribution** of a *continuous numerical variable*, but differ in that histograms give a *count*, while density plots give the *relative probability* of a value.
+
+Both of these, ultimately, depend on the data, and the parameters of the histogram or density plot.
+However, the only parameter we will look at in this course is the `bins` parameter of `geom_histogram()`.
+
+## Histograms (`geom_histogram()`)
+
+Histograms are plots of the counts of *a single variable*, breaking up the variable in some number of **bins**, each (typically) covering an equally spaced interval.
+For example, if we are plotting a histogram of students' numerical grades (from 0 to 100), we may choose to split this range up into 10 bins of 10 marks each, or 20 bins of 5 marks each.
+
+In the tutorial sheet, they plot the histogram of the air times of flights.
+By default, `ggplot()` will use 30 bins, which you can change by altering the `bins` parameter.
+The choice of the number of bins is quite discretionary - there is no science or correct answer, apart from the general advice of 'not too few, not too many'.
+Too few bins, and you cannot see the detail of the distribution, too many bins, and you cannot see the general picture of the distribution.
+
+Using 40 bins, you can see that there are three general areas of interest, indicated by the peaks.
+0 to 250, 250 to 400, and a small set of values around 600.
+With 8 bins, the detail of the two peaks is lost, misrepresenting the data.
+With 200 bins, there are too many peaks which distract from the picture of the distribution.
+
+```{r eval=FALSE}
+g <- flights %>% filter(!is.na(air_time)) %>% ggplot(aes(air_time))
+g + geom_histogram(bins=8) + labs(title="8 bins - no shape")
+g + geom_histogram(bins=40) + labs(title="40 bins - reasonable detail")
+g + geom_histogram(bins=200) + labs(title="200 bins - too many peaks")
+```
+
+```{r echo=FALSE, fig.width=6, fig.height=2.5}
+g <- flights %>% filter(!is.na(air_time)) %>% ggplot(aes(air_time))
+p0 <- g + geom_histogram(bins=8) + labs(title="8 bins - no shape")
+p1 <- g + geom_histogram(bins=40) + labs(title="40 bins - reasonable detail")
+p2 <- g + geom_histogram(bins=200) + labs(title="200 bins - too many peaks")
+
+if (knitr::is_html_output()) {
+  # plot_grid(p0, p1, p2, ncol=3)
+  print(p0)
+  print(p1)
+  print(p2)
+} else {
+  print(p0)
+  print(p1)
+  print(p2)
+}
+```
+
+## Density plots (`geom_density()`)
+
+While histograms show the counts of a variable in each bin, density plots show the relative probability of a value occuring.
+These probabilities are **based on the data** and **the choice of parameters for the density plot**.
+However, we will not learn about the different parameters the density plot can take.
+
+You can see that the y-axis has been replaced with a density, which is the probability of any value occurring.
+For example, an `air_time` value of 200 has approximately a $0.0024 = 0.24\%$ chance of occurring based on the density plot.
+These values are represented by the dashed red lines in the plot below.
+Note that this probability estimation is based on the dataset we have.
+
+```{r}
+ggplot(flights, aes(air_time)) + geom_density(na.rm=T) +
+  geom_vline(xintercept=200, col="red", linetype="dashed") +
+  geom_hline(yintercept=0.0024, col="red", linetype="dashed")
+```
+
+# Matrix scatter plots
+
+The tutorial sheet introduces another plot that *does not use* `ggplot2`, the matrix scatter plot.
+
+## The `iris` dataset
+
+The `iris` dataset is used for these examples, and is built-in to R.
+You can access it with `iris`.
+It is a dataset of 150 observations, which consist of 3 species of iris flowers: setosa, versicolor, and virginica.
+Petal and sepal measurements of 50 of each species are recorded in this dataset.
+
+A quick study of the *str*ucture of the `iris` dataset shows 4 numerical variables and 1 factor variable (`Species`), which is a categorical variable.
+`str(iris)` indicates that the factor variable has 3 levels, i.e. 3 unique values.
+
+```{r}
+str(iris)
+```
+
+The summary of the data also gives us some basic statistics on each variable, including the count of each species.
+
+```{r}
+summary(iris)
+```
+
+## Scatter plots for clustering (`geom_point()` with `color`)
+
+The tutorial uses `geom_point()` to visualise clusters by each species of iris, specifying the `color` parameter to provide a colourful way to visualise the data.
+
+You can see that the species are differentiated by colour, and that there is a clustering pattern among each species.
+
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Petal.Length, color=Species)) +
+  geom_point()
+```
+
+## Matrix scatter plots with the `pairs()` function
+
+Matrix scatter plots are useful for visualising the relationship between several variables in the same plot.
+The first method used in the tutorial utilises the built-in `pairs()` function, with `pch` and `bg` parameters.
+
+`pch` refers to the *point character*, i.e. the shape of the character plotted at each point.
+You can see all the possible point characters with `?pch`.
+`pch=21` will plot each point as a filled circle.
+
+`bg` refers to the background colour of the point characters, which is equivalent to the `fill` parameter in `ggplot2`.
+`unclass(iris$Species)` converts the `Species` vector into a vector of `1`, `2`, or `3`, depending on the value.
+It then indexes from the colour vector, so that each `1` becomes `"pink"`, `2` becomes `"light green"`, and `3` becomes `"light blue"`.
+These colours are then assigned for each observation in `iris[1:4]`.
+
+```{r fig.height=4.5, fig.width=6}
+pairs(iris[1:4], main = "Iris Data -- 3 species",
+      pch = 21,
+      bg = c("pink", "light green", "light blue")[unclass(iris$Species)])
+```
+
+The interpretation of this plot is simpler than it looks.
+Each feature is plotted against every other feature.
+For example, looking at the cell labelled `Sepal.Length`, all cells to the *right* of it have `Sepal.Length` as the y-axis, and all cells *below* it have `Sepal.Length` as the x-axis.
+The colours, added by the `bg` parameter, help us identify clustering patterns in each plot by the species.
+
+## Matrix scatter plots with the `psych` package (`pairs.panels()`)
+
+In the above plots, each variable was plotted against every other variable *twice*, once as the x-axis, and once on the y-axis.
+The `pairs.panels()` function in the `psych` package (which must be installed) removes these duplicated graphs, and instead uses the space to display the correlation coefficient of each variable against every other variable.
+
+We use the Pearson correlation coefficient, which is **a measure to quantify the linear relationship between two quantitative variables.** It varies between -1 and 1.
+A positive (negative) correlation coefficient indicates a upward (downward) sloping line of best fit.
+Values closer to -1 or 1 imply that the data is closer to the line.
+For some visual representation of different correlation values, you may look at the [Wikipedia page on Pearson's correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient).
+
+There are many settings that can be changed, but I personally do not think that this is a function that you need to memorise its use deeply for this course.
+Focus instead on other key concepts, especially in the coming weeks.
+
+```{r fig.height=4.5, fig.width=6, warning=FALSE, message=FALSE}
+library(psych)
+pairs.panels(iris[1:4],         # dataset is the first four columns of iris
+  method = "pearson",           # use the Pearson correlation coefficient
+  hist.col = "steelblue",       # set the histogram column colour
+  pch = 21, bg = c("pink", "light green", "light blue")[(iris$Species)],
+  density = TRUE,               # show density plots along the diagonal
+  ellipses = FALSE              # hide correlation ellipses
+)
+```

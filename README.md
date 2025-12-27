@@ -5,16 +5,16 @@ At the top-right corner of the file preview, there is a download icon, also show
 
 # Links
 
-* Tutorial 1 [rmd](https://tclbe.github.io/ps0002/week2/tut01.Rmd), [html](https://tclbe.github.io/ps0002/week2/tut01.html), [pdf](https://tclbe.github.io/ps0002/week2/tut01.pdf)
-* Lab 1 [rmd](https://tclbe.github.io/ps0002/week2/lab01.Rmd), [html](https://tclbe.github.io/ps0002/week2/lab01.html), [pdf](https://tclbe.github.io/ps0002/week2/lab01.pdf)
+* Week 2: tutorial 1 ([rmd](https://tclbe.github.io/ps0002/week2/tut01.Rmd), [html](https://tclbe.github.io/ps0002/week2/tut01.html), [pdf](https://tclbe.github.io/ps0002/week2/tut01.pdf))
+and lab 1 ([rmd](https://tclbe.github.io/ps0002/week2/lab01.Rmd), [html](https://tclbe.github.io/ps0002/week2/lab01.html), [pdf](https://tclbe.github.io/ps0002/week2/lab01.pdf))
 
-* [Tutorial 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut02.html)
-* [Lab 2](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab02.html)
+* Week 3: tutorial 2 ([rmd](https://tclbe.github.io/ps0002/week3/tut02.Rmd), [html](https://tclbe.github.io/ps0002/week3/tut02.html), [pdf](https://tclbe.github.io/ps0002/week3/tut02.pdf))
+and lab 2 ([rmd](https://tclbe.github.io/ps0002/week3/lab02.Rmd), [html](https://tclbe.github.io/ps0002/week3/lab02.html), [pdf](https://tclbe.github.io/ps0002/week3/lab02.pdf))
 
-* [Tutorial 3](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut03.html)
+* Week 4: tutorial 3 ([rmd](https://tclbe.github.io/ps0002/week4/tut03.Rmd), [html](https://tclbe.github.io/ps0002/week4/tut03.html), [pdf](https://tclbe.github.io/ps0002/week4/tut03.pdf))
 
-* [Tutorial 4](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut04.html)
-* [Lab 4](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab04.html)
+* Week 5: tutorial 4 ([rmd](https://tclbe.github.io/ps0002/week5/tut04.Rmd), [html](https://tclbe.github.io/ps0002/week5/tut04.html), [pdf](https://tclbe.github.io/ps0002/week5/tut04.pdf))
+and lab 4 ([rmd](https://tclbe.github.io/ps0002/week5/lab04.Rmd), [html](https://tclbe.github.io/ps0002/week5/lab04.html), [pdf](https://tclbe.github.io/ps0002/week5/lab04.pdf))
 
 * [Tutorial 5](https://tclbe.github.io/ps0002/tuts-and-labs/html/tut05.html)
 * [Lab 5](https://tclbe.github.io/ps0002/tuts-and-labs/html/lab05.html)

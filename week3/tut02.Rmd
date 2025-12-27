@@ -1,7 +1,7 @@
 ---
 title: "PS0002 Tut 2 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
-date: "24 Jan 2025"
+date: "3 Feb 2025"
 output:
   pdf_document:
     df_print: tibble
@@ -27,14 +27,6 @@ editor_options:
   markdown: 
     wrap: sentence
 ---
-
-\AddToShipoutPictureFG{
-  \AtPageCenter{% or \AtTextCenter
-    \makebox[0pt]{\rotatebox[origin=c]{45}{%
-      \scalebox{5}{\texttt{\texttransparent{0.1}{DO NOT DISTRIBUTE}}}%
-    }}
-  }
-}
 
 # R Packages (libraries)
 

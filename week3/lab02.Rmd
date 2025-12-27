@@ -1,15 +1,15 @@
 ---
 title: "PS0002 Lab 2 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
-date: "24 Jan 2025"
+date: "6 Feb 2025"
 output:
+  pdf_document:
+    df_print: tibble
+    template: ../eisvogel.latex
   html_document:
     keep_md: true
     toc: true
     toc_float: true
-  pdf_document:
-    df_print: tibble
-    template: ../eisvogel.latex
 toc: true
 toc-own-page: true
 numbersections: true
@@ -21,16 +21,7 @@ geometry:
 - bottom=25mm
 - headsep=4mm
 - footskip=10mm
-header-includes:
-   - \usepackage{eso-pic,graphicx,transparent}
 ---
-\AddToShipoutPictureFG{
-  \AtPageCenter{% or \AtTextCenter
-    \makebox[0pt]{\rotatebox[origin=c]{45}{%
-      \scalebox{5}{\texttt{\texttransparent{0.1}{DO NOT DISTRIBUTE}}}%
-    }}
-  }
-}
 
 # The `msleep` dataset
 This lab uses the `msleep` dataset, which you can download using the `download.file()` function and link below.
