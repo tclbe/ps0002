@@ -7,7 +7,6 @@ output:
     df_print: tibble
     template: ../eisvogel.latex
   html_document:
-    keep_md: true
     toc: true
     toc_float: true
 toc: true

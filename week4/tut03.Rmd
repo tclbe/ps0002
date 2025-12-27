@@ -4,7 +4,6 @@ author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
 date: "4 Feb 2025"
 output:
   html_document:
-    keep_md: true
     toc: true
     toc_float: true
   pdf_document:
