@@ -1,7 +1,7 @@
 ---
 title: "PS0002 Lab 1 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
-date: "26 Dec 2025"
+date: "11 Jan 2026"
 output:
   html_document:
     toc: true
@@ -20,48 +20,35 @@ geometry:
 - bottom=25mm
 - headsep=4mm
 - footskip=10mm
+header-includes:
+   - \usepackage{graphicx}
 ---
 
 # Task 1
-## Reading data from files
-For the most part, in this course, we will either get data from other packages in R, or read data from files.
-It is important to be familiar with how to import data, and generally there are only two (three) functions to be aware of,
-`read.fwf()` and `read.table()` (and `read.csv()`, which is really just `read.table()` with some preset settings).
 
-In general, the first step is to be aware what is the structure of the data.
-Open the data file you want to import and study its structure.
-Does it have a header? Are the individual data points in an observation separated by anything?
-And in general, most files (almost all) should have one observation in one row.
+## Reading data from files
+
+For the most part, in this course, we will either get data from other packages in R, or read data from files. It is important to be familiar with how to import data, and generally there are only two (three) functions to be aware of, `read.fwf()` and `read.table()` (and `read.csv()`, which is really just `read.table()` with some preset settings).
+
+In general, the first step is to be aware what is the structure of the data. Open the data file you want to import and study its structure. Does it have a header? Are the individual data points in an observation separated by anything? And in general, most files (almost all) should have one observation in one row.
 
 ## The working directory (`getwd()` and `setwd()`)
-If you encounter any file-related errors (e.g. file not found) when trying to read a file,
-the first thing you should check is your working directory.
-Most problems will likely be solved if you check your working directory, because
-**any functions that require a file (filepath) will try to find the file (filepath) relative to your current working directory.**
 
-To see your current working directory, use `getwd()`.
-You may, for example, get the following response: `C:/Users/caleb/Documents`.
-Thus, if I run `read.table("lab1fixed.txt")`, it will look for the file at `C:/Users/caleb/Documents/lab1fixed.txt`.
-So, check if the file is where you intend it to be,
-or check that your working directory is where you intend it to be.
+If you encounter any file-related errors (e.g. file not found) when trying to read a file, the first thing you should check is your working directory. Most problems will likely be solved if you check your working directory, because **any functions that require a file (filepath) will try to find the file (filepath) relative to your current working directory.**
 
-To change your working directory, you can use `setwd()` and pass it a path.
-In RStudio, use the Files tab, click the 3 dots at the right of the panel and navigate to the folder with your files.
-Click the 'More' button or cog icon, and find the 'Set As Working Directory' option.
-Both methods are equivalent, as they ultimately use the `setwd()` function.
+To see your current working directory, use `getwd()`. You may, for example, get the following response: `C:/Users/caleb/Documents`. Thus, if I run `read.table("lab1fixed.txt")`, it will look for the file at `C:/Users/caleb/Documents/lab1fixed.txt`. So, check if the file is where you intend it to be, or check that your working directory is where you intend it to be.
+
+To change your working directory, you can use `setwd()` and pass it a path. In RStudio, use the Files tab, click the 3 dots at the right of the panel and navigate to the folder with your files. Click the cog icon, and find the 'Set As Working Directory' option. Both methods are equivalent, as they ultimately use the `setwd()` function.
+
+```{r, echo=FALSE, fig.cap="", out.width="80%"}
+knitr::include_graphics("./rstudio-files-tab.png")
+```
 
 ## Importing fixed width format files `read.fwf()`
-Open and observe the format of `lab1fixed.txt`.
-As the name suggests, it is a **fixed-width format** file,
-with no separators between each data point in a single observation.
-Instead, some number of columns corresponds to some information about a single observation,
-with the details for this file provided in the lab sheet.
 
-To import this file into R, use the `read.fwf()` command.
-To understand what the function does and what parameters it can take, we can use the `?` operator,
-i.e. `?read.fwf`.
-Read through the Description, Usage, and Arguments sections to understand how to use the function.
-Some help pages may also provide some example usage at the bottom of the page.
+Open and observe the format of `lab1fixed.txt`. As the name suggests, it is a **fixed-width format** file, with no separators between each data point in a single observation. Instead, some number of columns corresponds to some information about a single observation, with the details for this file provided in the lab sheet.
+
+To import this file into R, use the `read.fwf()` command. To understand what the function does and what parameters it can take, we can use the `?` operator, i.e. `?read.fwf`. Read through the Description, Usage, and Arguments sections to understand how to use the function. Most help pages may also provide some example usage at the bottom of the page.
 
 ```{r}
 lab1 <- read.fwf('lab1fixed.txt', widths = c(3, 1, 3, 2, 1),
@@ -69,8 +56,8 @@ lab1 <- read.fwf('lab1fixed.txt', widths = c(3, 1, 3, 2, 1),
 ```
 
 ## Filtering entries
-To filter the entries, we can use a boolean test with indexing.
-As a mini example, to demonstrate what occurs when filtering:
+
+To filter the entries, we can use a Boolean test with indexing. As a mini example, to demonstrate what occurs when filtering:
 
 ```{r}
 df1 <- data.frame(matrix(1:10, nrow=5))
@@ -91,13 +78,10 @@ nrow(lab1m) # returns only the number of rows
 And thus we conclude that there are 48 males in the data frame `lab1`.
 
 ## Importing not fixed width format files (`read.table()`)
-Now, look at `lab1test.txt` and observe its format.
-There are two columns, with entries separated by a space character.
-The first row are the headers of the table.
 
-The most general function available to us is `read.table()`.
-Again, look at the documentation of it using `?read.table`.
-There are many options to it, but the most important would be the `header` and `sep` parameters.
+Now, look at `lab1test.txt` and observe its format. There are two columns, with entries separated by a space character. The first row are the headers of the table.
+
+The most general function available to us is `read.table()`. Again, look at the documentation of it using `?read.table`. There are many options to it, but the most important would be the `header` and `sep` parameters.
 
 ```{r}
 lab1test <- read.table('lab1test.txt', header=T)
@@ -106,13 +90,8 @@ lab1test <- read.table('lab1test.txt', header=T)
 Try experimenting with setting `header=F` and see what it does to the resulting data frame.
 
 ## Merging data frames
-The `lab1test` data frame has column headers `id` and `test`.
-The `id` column in `lab1test` corresponds to the `id` column in `lab1` and extends the data.
-Thus, we want to merge the data frames based on the `id` column,
-which we can do using `merge()`.
-Again, you can use `?merge` to understand its usage.
-In this case, it is a simple use of the function,
-but we can specify on what columns it merges on with the `by` parameter.
+
+The `lab1test` data frame has column headers `id` and `test`. The `id` column in `lab1test` corresponds to the `id` column in `lab1` and extends the data. Thus, we want to merge the data frames based on the `id` column, which we can do using `merge()`. Again, you can use `?merge` to understand its usage. In this case, it is a simple use of the function, but we can specify on what columns it merges on with the `by` parameter.
 
 ```{r}
 lab1merge <- merge(lab1, lab1test)
@@ -128,9 +107,8 @@ lab1merge[lab1merge$height > 182, 'test']
 From which we can see that there are only three individuals with height greater than 182.
 
 ## Removing a row from a data frame
-Removing a row is similar to filtering, and we must understand what criteria we want to filter or remove on.
-Since we want to remove the record related to subject 211, i.e. with `id` 211, we can filter using the `id` column,
-taking everything *but ID 211*.
+
+Removing a row is similar to filtering, and we must understand what criteria we want to filter or remove on. Since we want to remove the record related to subject 211, i.e. with `id` 211, we can filter using the `id` column, taking everything *but ID 211*.
 
 ```{r}
 lab1remo <- lab1merge[lab1merge$id != 211,]
@@ -140,8 +118,8 @@ dim(lab1remo)
 From which, comparing with the dimensions of `lab1merge`, we can see that one entry was indeed removed.
 
 ## Modifying a data frame entry
-Modifying a data frame entry is mostly a job of indexing and filtering, then assigning the new data.
-Similar to the above, we want to change the weight of `id` 211 from 60 to 80, so:
+
+Modifying a data frame entry is mostly a job of indexing and filtering, then assigning the new data. Similar to the above, we want to change the weight of `id` 211 from 60 to 80, so:
 
 ```{r}
 lab1[lab1$id == 211,]
@@ -150,8 +128,8 @@ lab1[lab1$id == 211,]
 ```
 
 ## Sorting a data frame (`order()`)
-To sort a data frame, we can use the `order()` function, which just returns a numerical ranking to the data.
-For example:
+
+To sort a data frame, we can use the `order()` function, which just returns a numerical ranking to the data. For example:
 
 ```{r}
 x <- c(100, 200, 150, 175, 125)
@@ -161,20 +139,11 @@ x <- x[order(x)]
 x
 ```
 
-In earlier exercises, we used a boolean condition (true or false, based on some criteria)
-to determine whether to keep or discard a row (observation).
-We can also use a numerical index to determine what entries to take, as in line 2 in the above code block.
+In earlier exercises, we used a boolean condition (true or false, based on some criteria) to determine whether to keep or discard a row (observation). We can also use a numerical index to determine what entries to take, as in line 2 in the above code block.
 
-You can see that `order()` gives the ordering of the numbers from smallest (1) to largest (5).
-So, when we order `x` by this sequence of indexes, we will get the elements in `x` ordered from smallest
-to largest.
+You can see that `order()` gives the ordering of the numbers from smallest (1) to largest (5). So, when we order `x` by this sequence of indexes, we will get the elements in `x` ordered from smallest to largest.
 
-In part (f), we are also asked to filter the data.
-In this case, it does not matter in which order we do it (filter then order, or order then filter).
-To simplify the ordering, we will use the `decreasing` parameter in `order()` to get it to
-order it in descending order, i.e. largest to smallest.
-`order()` also only can sort **vectors, and not dataframes/matrices**.
-If you experience an error when using `order()`, check that it is **not a dataframe/matrix**.
+In part (f), we are also asked to filter the data. In this case, it does not matter in which order we do it (filter then order, or order then filter). To simplify the ordering, we will use the `decreasing` parameter in `order()` to get it to order it in descending order, i.e. largest to smallest. `order()` also only can sort **vectors, and not dataframes/matrices**. If you experience an error when using `order()`, check that it is **not a dataframe/matrix**.
 
 ```{r}
 lab1f <- lab1merge[lab1merge$gender == 'F',]    # filter the data
@@ -184,11 +153,10 @@ lab1ordered[2, c('height', 'weight', 'test')]   # get the second entry and relev
 ```
 
 # Task 2
+
 We will define the matrices $X$ and $Y$ first, using `rep()` and `seq()` for $X$.
 
-`rep()` repeats what is passed to it, and `seq()` functions essentially like the `range()` function in Python,
-but is inclusive of the end number.
-Again, to read more about it, use the `?` operator on them.
+`rep()` repeats what is passed to it, and `seq()` functions essentially like the `range()` function in Python, but is inclusive of the end number. Again, to read more about it, use the `?` operator on them.
 
 ```{r}
 X <- cbind(rep(1, 4), seq(1,7,2)) # rep() repeats `1` 4 times, seq() is similar to range() in Python
@@ -203,7 +171,9 @@ bhat
 ```
 
 # Task 3
+
 ## Defining functions
+
 Functions in R are defined with the `function` keyword and are assigned to variable names.
 
 ```{r}
@@ -217,10 +187,8 @@ moment(lab1$height,2)
 ```
 
 # Task 4
-This is the function defined on slide 55.
-By default, functions in R return the last line run in the function,
-if it does not encounter a `return` statement first.
-You may also choose to explicitly return and end the function with a `return()` call.
+
+This is the function defined on slide 55. By default, functions in R return the last line run in the function, if it does not encounter a `return` statement first. You may also choose to explicitly return and end the function with a `return()` call.
 
 ```{r}
 f <- function(x) { return(-2*x**2 - 5*x + 7) }
