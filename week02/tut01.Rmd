@@ -1,7 +1,7 @@
 ---
 title: "PS0002 Tut 1 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
-date: "26 Dec 2025"
+date: "13 Jan 2026"
 output:
   html_document:
     toc: true
@@ -42,14 +42,15 @@ Both, however, work slightly differently.
 
 We will not frequently use the `cat()` or `print()` functions, because we generally see the output immediately.
 
-```r
+```{r results='hide'}
 cat('abc')
 print('xyz')
 ```
 
 # Assignment operator (`<-` or `=`)
 
-`<-` and `=` can both be used to assign values to variables in R. For consistency I will just use `<-`.
+`<-` and `=` can both be used to assign values to variables in R.
+For consistency I will just use `<-`.
 
 ```{r}
 x = 1
@@ -58,9 +59,9 @@ cat('x has the value', x, ', y has the value', y)
 ```
 
 # Vectors (`c()`)
+
 Vectors are created using the `c()` function.
-When a range of consecutive numbers is desired, we can also use `start:end` to get a vector of all numbers
-between `start` and `end`, inclusive of both ends.
+When a range of consecutive numbers is desired, we can also use `start:end` to get a vector of all numbers between `start` and `end`, inclusive of both ends.
 
 ```{r}
 v1 <- c(1, 3, 5, 7, 9, 11)
@@ -75,10 +76,12 @@ cat('v1 has length', length(v1))
 ```
 
 # Matrices
+
 Matrices in R are similar to matrices in math.
 They can be created in several ways.
 
 ## `dim()`
+
 `dim()` tells us the dimension of an object.
 A vector has no dimension, only length.
 We can assign a dimension to a vector to make it a matrix.
@@ -90,6 +93,7 @@ v1      # now a 3x2 matrix
 ```
 
 ## `matrix()`
+
 We can create matrices directly with `matrix()`.
 Specify the parameter(s) `ncol`, `nrow`, and/or `byrow` to determine how the matrix should be created.
 
@@ -100,6 +104,7 @@ matrix(1:10, ncol = 5, byrow=T)
 ```
 
 ## `rbind()` and `cbind()`
+
 Matrices can also be made using `rbind()` and `cbind()` on vectors or other matrices.
 
 ```{r}
@@ -111,8 +116,16 @@ rbind(a, b)
 rbind(1:5, 6:10)
 ```
 
+## Getting help (`?` and `help()`)
+
+Many functions in R have documentation on them, i.e. what the function does, how the function is used, the parameters it accepts.
+If you ever forget what a function does or how to use it, in the R console you can use the `?` operator or the `help()` function.
+
+For example, typing `?matrix` or `help(matrix)` *without the parentheses* will bring up the documentation page for the `matrix()` function.
+
 # Data frames (`data.frame`)
-Data frames are just matrices with column names.
+
+Matrices are limited to having data all of the same type (e.g. number, text, boolean) Data frames are just matrices, which allow for a mix of data types.
 They can be created with the `data.frame()` function on any matrix or vector.
 
 ```{r}
@@ -124,8 +137,7 @@ df2
 ```
 
 The rows are individual observations, the columns are the data of each observation.
-By default, the columns are assigned the names X1, X2, ..., Xn, for each column,
-and the rows are assigned numerical labels.
+By default, the columns are assigned the names `X1, X2, ..., Xn` for each column, and the rows are assigned numerical labels.
 We can see the column names, and assign new names using the `names()` function.
 
 ```{r}
@@ -142,19 +154,17 @@ row.names(df2) <- c('caleb', 'you')
 df2
 ```
 
-Now, to describe this data frame,
-I will say that this data frame has 2 observations (rows), and 5 data points (columns) for each observation.
-The interpretation of this data frame with the row and column names should come naturally.
+Now, to describe this data frame, I will say that this data frame has 2 observations (rows), and 5 data points (columns) for each observation.
+The interpretation of this data frame with these row and column names should come naturally.
 
 In this course, in general, we will not be creating data frames or matrices directly.
-Instead, most data will be read using a `read` function, which we will see in the lab, or imported from another library, which we will see in a few weeks.
+Instead, most data will be imported using a `read` function, which we will see in the lab, or imported from another library, which we will see in a few weeks.
 
 # Indexing vectors, matrices, and data frames
+
 To get a single value in a vector, matrix, or data frame, we can use indexing with square brackets `[]`.
-Indexing in R is extremely similar to indexing in Python,
-but unlike Python, which is 0-indexed, R is 1-indexed, so the first entry in a list always has index 1.
-Vectors in R are analogous to lists in Python (that do not contain other lists),
-and require only one indexing.
+Indexing in R is extremely similar to indexing in Python, but unlike Python, which is 0-indexed, R is 1-indexed, so the first entry in a list always has index 1.
+Vectors in R are analogous to lists in Python (that do not contain other lists), and require only one indexing.
 
 ```{r}
 x <- 1:5*10
@@ -167,14 +177,19 @@ The square bracket notation is the same, but we now have the option to index alo
 Take note of the below examples, noting the presence of the commas and blank entries.
 
 ```{r}
-df2['age']      # with no comma, selects columns, return as data frame.
+df2['age']      # with no comma, selects columns, return as *data frame*.
                 # or with comma, first is row, second is column.
-df2[, 'age']    # selects all rows, and only column 'age', return as vector.
-df2['caleb',]   # selects only row 'caleb', and all columns, return as data frame.
+df2[, 'age']    # selects all rows, and only column 'age', return as *vector*.
+df2['caleb',]   # selects only row 'caleb', and all columns, return as *data frame*.
 ```
 
+Take note of the difference with and without the comma.
+Without the comma, it is returned as a **data frame**.
+With the comma, it is returned as a **vector**.
+This distinction will not be useful for a while, but some functions accept **only vectors** or **only data frames**.
+
 In general, the indexing is done as `thing_to_index[rows, columns]`.
-Columns in data frames can also be accessed using a `$` operator.
+Named columns in data frames can also be accessed using a `$` operator.
 
 ```{r}
 df2$age         # equivalent to df2[, 'age'], return as vector.

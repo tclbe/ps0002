@@ -11,7 +11,7 @@
 
 <meta name="author" content="Caleb Tay (caleb.tay@ntu.edu.sg)" />
 
-<meta name="date" content="2025-12-26" />
+<meta name="date" content="2026-01-13" />
 
 <title>PS0002 Tut 1 Notes</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">PS0002 Tut 1 Notes</h1>
 <h4 class="author">Caleb Tay (<a href="mailto:caleb.tay@ntu.edu.sg" class="email">caleb.tay@ntu.edu.sg</a>)</h4>
-<h4 class="date">26 Dec 2025</h4>
+<h4 class="date">13 Jan 2026</h4>
 
 </div>
 
@@ -1594,11 +1594,24 @@ cbind(a, b)</code></pre>
 ## [1,]    1    2    3    4    5
 ## [2,]    6    7    8    9   10</code></pre>
 </div>
+<div id="getting-help-and-help" class="section level2">
+<h2>Getting help (<code>?</code> and <code>help()</code>)</h2>
+<p>Many functions in R have documentation on them, i.e. what the
+function does, how the function is used, the parameters it accepts. If
+you ever forget what a function does or how to use it, in the R console
+you can use the <code>?</code> operator or the <code>help()</code>
+function.</p>
+<p>For example, typing <code>?matrix</code> or <code>help(matrix)</code>
+<em>without the parentheses</em> will bring up the documentation page
+for the <code>matrix()</code> function.</p>
+</div>
 </div>
 <div id="data-frames-data.frame" class="section level1">
 <h1>Data frames (<code>data.frame</code>)</h1>
-<p>Data frames are just matrices with column names. They can be created
-with the <code>data.frame()</code> function on any matrix or vector.</p>
+<p>Matrices are limited to having data all of the same type
+(e.g. number, text, boolean) Data frames are just matrices, which allow
+for a mix of data types. They can be created with the
+<code>data.frame()</code> function on any matrix or vector.</p>
 <pre class="r"><code>df1 &lt;- data.frame(1:5)
 df1</code></pre>
 <pre><code>##   X1.5
@@ -1617,10 +1630,10 @@ df2</code></pre>
 ## 1  1  3  5  7  9
 ## 2  2  4  6  8 10</code></pre>
 <p>The rows are individual observations, the columns are the data of
-each observation. By default, the columns are assigned the names X1, X2,
-…, Xn, for each column, and the rows are assigned numerical labels. We
-can see the column names, and assign new names using the
-<code>names()</code> function.</p>
+each observation. By default, the columns are assigned the names
+<code>X1, X2, ..., Xn</code> for each column, and the rows are assigned
+numerical labels. We can see the column names, and assign new names
+using the <code>names()</code> function.</p>
 <pre class="r"><code>names(df2)</code></pre>
 <pre><code>## [1] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;X4&quot; &quot;X5&quot;</code></pre>
 <pre class="r"><code>names(df2) &lt;- c(&#39;age&#39;, &#39;height&#39;, &#39;weight&#39;, &#39;grade&#39;, &#39;money&#39;)
@@ -1639,10 +1652,10 @@ df2</code></pre>
 ## you     2      4      6     8    10</code></pre>
 <p>Now, to describe this data frame, I will say that this data frame has
 2 observations (rows), and 5 data points (columns) for each observation.
-The interpretation of this data frame with the row and column names
+The interpretation of this data frame with these row and column names
 should come naturally.</p>
 <p>In this course, in general, we will not be creating data frames or
-matrices directly. Instead, most data will be read using a
+matrices directly. Instead, most data will be imported using a
 <code>read</code> function, which we will see in the lab, or imported
 from another library, which we will see in a few weeks.</p>
 </div>
@@ -1664,19 +1677,24 @@ columns), we have the option to get rows, columns, or individual cells.
 The square bracket notation is the same, but we now have the option to
 index along the rows or columns or both. Take note of the below
 examples, noting the presence of the commas and blank entries.</p>
-<pre class="r"><code>df2[&#39;age&#39;]      # with no comma, selects columns, return as data frame.</code></pre>
+<pre class="r"><code>df2[&#39;age&#39;]      # with no comma, selects columns, return as *data frame*.</code></pre>
 <pre><code>##       age
 ## caleb   1
 ## you     2</code></pre>
 <pre class="r"><code>                # or with comma, first is row, second is column.
-df2[, &#39;age&#39;]    # selects all rows, and only column &#39;age&#39;, return as vector.</code></pre>
+df2[, &#39;age&#39;]    # selects all rows, and only column &#39;age&#39;, return as *vector*.</code></pre>
 <pre><code>## [1] 1 2</code></pre>
-<pre class="r"><code>df2[&#39;caleb&#39;,]   # selects only row &#39;caleb&#39;, and all columns, return as data frame.</code></pre>
+<pre class="r"><code>df2[&#39;caleb&#39;,]   # selects only row &#39;caleb&#39;, and all columns, return as *data frame*.</code></pre>
 <pre><code>##       age height weight grade money
 ## caleb   1      3      5     7     9</code></pre>
+<p>Take note of the difference with and without the comma. Without the
+comma, it is returned as a <strong>data frame</strong>. With the comma,
+it is returned as a <strong>vector</strong>. This distinction will not
+be useful for a while, but some functions accept <strong>only
+vectors</strong> or <strong>only data frames</strong>.</p>
 <p>In general, the indexing is done as
-<code>thing_to_index[rows, columns]</code>. Columns in data frames can
-also be accessed using a <code>$</code> operator.</p>
+<code>thing_to_index[rows, columns]</code>. Named columns in data frames
+can also be accessed using a <code>$</code> operator.</p>
 <pre class="r"><code>df2$age         # equivalent to df2[, &#39;age&#39;], return as vector.</code></pre>
 <pre><code>## [1] 1 2</code></pre>
 <p>To select multiple rows or multiple columns, you can pass in vectors
