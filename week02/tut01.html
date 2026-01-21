@@ -11,7 +11,7 @@
 
 <meta name="author" content="Caleb Tay (caleb.tay@ntu.edu.sg)" />
 
-<meta name="date" content="2026-01-13" />
+<meta name="date" content="2026-01-21" />
 
 <title>PS0002 Tut 1 Notes</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">PS0002 Tut 1 Notes</h1>
 <h4 class="author">Caleb Tay (<a href="mailto:caleb.tay@ntu.edu.sg" class="email">caleb.tay@ntu.edu.sg</a>)</h4>
-<h4 class="date">13 Jan 2026</h4>
+<h4 class="date">21 Jan 2026</h4>
 
 </div>
 
@@ -1513,7 +1513,7 @@ print(&#39;xyz&#39;)</code></pre>
 <div id="assignment-operator---or" class="section level1">
 <h1>Assignment operator (<code>&lt;-</code> or <code>=</code>)</h1>
 <p><code>&lt;-</code> and <code>=</code> can both be used to assign
-values to variables in R. For consistency I will just use
+values to variables in R. For consistency I will generally use
 <code>&lt;-</code>.</p>
 <pre class="r"><code>x = 1
 y &lt;- 2
@@ -1534,65 +1534,61 @@ cat(&#39;v1 has the value&#39;, v1, &#39;, v2 has the value&#39;, v2)</code></pr
 <pre class="r"><code>cat(&#39;v1 has length&#39;, length(v1))</code></pre>
 <pre><code>## v1 has length 6</code></pre>
 </div>
-<div id="matrices" class="section level1">
-<h1>Matrices</h1>
-<p>Matrices in R are similar to matrices in math. They can be created in
-several ways.</p>
-<div id="dim" class="section level2">
-<h2><code>dim()</code></h2>
+<div id="data-frames-data.frame" class="section level1">
+<h1>Data frames (<code>data.frame</code>)</h1>
+<p>Data frames are what we will be handling throughout the rest of the
+course. They are a collection of data, organised in
+<strong>rows</strong> and <strong>columns</strong>. They can be created
+with the <code>data.frame()</code> function. In this case, there are 3
+sets of data.</p>
+<pre class="r"><code>df &lt;- data.frame(c(26, 24), c(175, 172), c(&quot;M&quot;, &quot;F&quot;))
+df</code></pre>
+<pre><code>##   c.26..24. c.175..172. c..M....F..
+## 1        26         175           M
+## 2        24         172           F</code></pre>
+<p>The rows are individual observations, the columns are the data of
+each observation. By default, the columns are not assigned any
+meaningful names, and the rows are assigned numerical labels. We can see
+the column names and assign new names using the <code>names()</code> (or
+<code>colnames()</code> function.</p>
+<pre class="r"><code>names(df) # equivalently, colnames(df)</code></pre>
+<pre><code>## [1] &quot;c.26..24.&quot;   &quot;c.175..172.&quot; &quot;c..M....F..&quot;</code></pre>
+<pre class="r"><code>names(df) &lt;- c(&#39;age&#39;, &#39;height&#39;, &#39;gender&#39;)
+df</code></pre>
+<pre><code>##   age height gender
+## 1  26    175      M
+## 2  24    172      F</code></pre>
+<p>The column names could also be given directly in the
+<code>data.frame()</code> function:</p>
+<pre class="r"><code>df1 &lt;- data.frame(age = c(26, 24), height = c(175, 172), gender = c(&quot;M&quot;, &quot;F&quot;))
+df1</code></pre>
+<pre><code>##   age height gender
+## 1  26    175      M
+## 2  24    172      F</code></pre>
+<p>We can also change the row names if desired using
+<code>rownames()</code>.</p>
+<pre class="r"><code>rownames(df)</code></pre>
+<pre><code>## [1] &quot;1&quot; &quot;2&quot;</code></pre>
+<pre class="r"><code>rownames(df) &lt;- c(&#39;caleb&#39;, &#39;taylor&#39;)
+df</code></pre>
+<pre><code>##        age height gender
+## caleb   26    175      M
+## taylor  24    172      F</code></pre>
+<div id="dimension-of-a-data-frame-or-matrix-dim" class="section level2">
+<h2>Dimension of a data frame (or matrix) (<code>dim()</code>)</h2>
 <p><code>dim()</code> tells us the dimension of an object. A vector has
-no dimension, only length. We can assign a dimension to a vector to make
-it a matrix.</p>
-<pre class="r"><code>dim(v1)</code></pre>
-<pre><code>## NULL</code></pre>
-<pre class="r"><code>dim(v1) &lt;- c(3, 2)
-v1      # now a 3x2 matrix</code></pre>
-<pre><code>##      [,1] [,2]
-## [1,]    1    7
-## [2,]    3    9
-## [3,]    5   11</code></pre>
-</div>
-<div id="matrix" class="section level2">
-<h2><code>matrix()</code></h2>
-<p>We can create matrices directly with <code>matrix()</code>. Specify
-the parameter(s) <code>ncol</code>, <code>nrow</code>, and/or
-<code>byrow</code> to determine how the matrix should be created.</p>
-<pre class="r"><code>matrix(1:10, nrow = 2)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10</code></pre>
-<pre class="r"><code>matrix(1:10, ncol = 2)</code></pre>
-<pre><code>##      [,1] [,2]
-## [1,]    1    6
-## [2,]    2    7
-## [3,]    3    8
-## [4,]    4    9
-## [5,]    5   10</code></pre>
-<pre class="r"><code>matrix(1:10, ncol = 5, byrow=T)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10</code></pre>
-</div>
-<div id="rbind-and-cbind" class="section level2">
-<h2><code>rbind()</code> and <code>cbind()</code></h2>
-<p>Matrices can also be made using <code>rbind()</code> and
-<code>cbind()</code> on vectors or other matrices.</p>
-<pre class="r"><code>a &lt;- matrix(1:10, nrow = 2)
-b &lt;- matrix(11:20, nrow = 2)
-cbind(a, b)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## [1,]    1    3    5    7    9   11   13   15   17    19
-## [2,]    2    4    6    8   10   12   14   16   18    20</code></pre>
-<pre class="r"><code>rbind(a, b)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10
-## [3,]   11   13   15   17   19
-## [4,]   12   14   16   18   20</code></pre>
-<pre class="r"><code>rbind(1:5, 6:10)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10</code></pre>
+no dimension, only length. In this case, <code>dim()</code> tells us
+there are 2 rows and 3 columns.</p>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 2 3</code></pre>
+<p>Now, to describe this data frame, I will say that this data frame has
+2 observations (rows), and 3 data points (columns) for each observation.
+The interpretation of this data frame with these row and column names
+should come naturally based on the column and row names.</p>
+<p>In this course, in general, we will not be creating data frames
+directly. Instead, most data will be imported using a <code>read</code>
+function, which we will see in the lab, or imported from another
+library, which we will see in a few weeks.</p>
 </div>
 <div id="getting-help-and-help" class="section level2">
 <h2>Getting help (<code>?</code> and <code>help()</code>)</h2>
@@ -1601,63 +1597,12 @@ function does, how the function is used, the parameters it accepts. If
 you ever forget what a function does or how to use it, in the R console
 you can use the <code>?</code> operator or the <code>help()</code>
 function.</p>
-<p>For example, typing <code>?matrix</code> or <code>help(matrix)</code>
+<p>For example, typing <code>?names</code> or <code>help(names)</code>
 <em>without the parentheses</em> will bring up the documentation page
-for the <code>matrix()</code> function.</p>
+for the <code>names()</code> function. You can do this with nearly
+anything, e.g <code>c()</code>, <code>dim()</code>,
+<code>data.frame()</code></p>
 </div>
-</div>
-<div id="data-frames-data.frame" class="section level1">
-<h1>Data frames (<code>data.frame</code>)</h1>
-<p>Matrices are limited to having data all of the same type
-(e.g. number, text, boolean) Data frames are just matrices, which allow
-for a mix of data types. They can be created with the
-<code>data.frame()</code> function on any matrix or vector.</p>
-<pre class="r"><code>df1 &lt;- data.frame(1:5)
-df1</code></pre>
-<pre><code>##   X1.5
-## 1    1
-## 2    2
-## 3    3
-## 4    4
-## 5    5</code></pre>
-<pre class="r"><code>a</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    3    5    7    9
-## [2,]    2    4    6    8   10</code></pre>
-<pre class="r"><code>df2 &lt;- data.frame(a)
-df2</code></pre>
-<pre><code>##   X1 X2 X3 X4 X5
-## 1  1  3  5  7  9
-## 2  2  4  6  8 10</code></pre>
-<p>The rows are individual observations, the columns are the data of
-each observation. By default, the columns are assigned the names
-<code>X1, X2, ..., Xn</code> for each column, and the rows are assigned
-numerical labels. We can see the column names, and assign new names
-using the <code>names()</code> function.</p>
-<pre class="r"><code>names(df2)</code></pre>
-<pre><code>## [1] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;X4&quot; &quot;X5&quot;</code></pre>
-<pre class="r"><code>names(df2) &lt;- c(&#39;age&#39;, &#39;height&#39;, &#39;weight&#39;, &#39;grade&#39;, &#39;money&#39;)
-df2</code></pre>
-<pre><code>##   age height weight grade money
-## 1   1      3      5     7     9
-## 2   2      4      6     8    10</code></pre>
-<p>We can also change the row names if desired using
-<code>row.names()</code>.</p>
-<pre class="r"><code>row.names(df2)</code></pre>
-<pre><code>## [1] &quot;1&quot; &quot;2&quot;</code></pre>
-<pre class="r"><code>row.names(df2) &lt;- c(&#39;caleb&#39;, &#39;you&#39;)
-df2</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9
-## you     2      4      6     8    10</code></pre>
-<p>Now, to describe this data frame, I will say that this data frame has
-2 observations (rows), and 5 data points (columns) for each observation.
-The interpretation of this data frame with these row and column names
-should come naturally.</p>
-<p>In this course, in general, we will not be creating data frames or
-matrices directly. Instead, most data will be imported using a
-<code>read</code> function, which we will see in the lab, or imported
-from another library, which we will see in a few weeks.</p>
 </div>
 <div id="indexing-vectors-matrices-and-data-frames" class="section level1">
 <h1>Indexing vectors, matrices, and data frames</h1>
@@ -1677,16 +1622,16 @@ columns), we have the option to get rows, columns, or individual cells.
 The square bracket notation is the same, but we now have the option to
 index along the rows or columns or both. Take note of the below
 examples, noting the presence of the commas and blank entries.</p>
-<pre class="r"><code>df2[&#39;age&#39;]      # with no comma, selects columns, return as *data frame*.</code></pre>
-<pre><code>##       age
-## caleb   1
-## you     2</code></pre>
-<pre class="r"><code>                # or with comma, first is row, second is column.
-df2[, &#39;age&#39;]    # selects all rows, and only column &#39;age&#39;, return as *vector*.</code></pre>
-<pre><code>## [1] 1 2</code></pre>
-<pre class="r"><code>df2[&#39;caleb&#39;,]   # selects only row &#39;caleb&#39;, and all columns, return as *data frame*.</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9</code></pre>
+<pre class="r"><code>df[&#39;age&#39;]     # with no comma, selects columns, return as *data frame*.</code></pre>
+<pre><code>##        age
+## caleb   26
+## taylor  24</code></pre>
+<pre class="r"><code>              # or with comma, first is row, second is column.
+df[, &#39;age&#39;]   # selects all rows, and only column &#39;age&#39;, return as *vector*.</code></pre>
+<pre><code>## [1] 26 24</code></pre>
+<pre class="r"><code>df[&#39;caleb&#39;,]  # selects only row &#39;caleb&#39;, and all columns, return as *data frame*.</code></pre>
+<pre><code>##       age height gender
+## caleb  26    175      M</code></pre>
 <p>Take note of the difference with and without the comma. Without the
 comma, it is returned as a <strong>data frame</strong>. With the comma,
 it is returned as a <strong>vector</strong>. This distinction will not
@@ -1695,26 +1640,31 @@ vectors</strong> or <strong>only data frames</strong>.</p>
 <p>In general, the indexing is done as
 <code>thing_to_index[rows, columns]</code>. Named columns in data frames
 can also be accessed using a <code>$</code> operator.</p>
-<pre class="r"><code>df2$age         # equivalent to df2[, &#39;age&#39;], return as vector.</code></pre>
-<pre><code>## [1] 1 2</code></pre>
+<pre class="r"><code>df$age         # equivalent to df2[, &#39;age&#39;], return as vector.</code></pre>
+<pre><code>## [1] 26 24</code></pre>
 <p>To select multiple rows or multiple columns, you can pass in vectors
 as indexes. Selections can also be made using numerical indices. You can
 see that the below have the exact same output as using the named indices
 above.</p>
-<pre class="r"><code>df2[1:3]</code></pre>
-<pre><code>##       age height weight
-## caleb   1      3      5
-## you     2      4      6</code></pre>
-<pre class="r"><code>df2[, c(2, 5)]</code></pre>
-<pre><code>##       height money
-## caleb      3     9
-## you        4    10</code></pre>
-<pre class="r"><code>df2[1, ]</code></pre>
-<pre><code>##       age height weight grade money
-## caleb   1      3      5     7     9</code></pre>
+<pre class="r"><code>df</code></pre>
+<pre><code>##        age height gender
+## caleb   26    175      M
+## taylor  24    172      F</code></pre>
+<pre class="r"><code>df[1:2]        # get the first to second columns</code></pre>
+<pre><code>##        age height
+## caleb   26    175
+## taylor  24    172</code></pre>
+<pre class="r"><code>df[1, ]        # get the first row, and all columns.</code></pre>
+<pre><code>##       age height gender
+## caleb  26    175      M</code></pre>
+<pre class="r"><code>df[, c(1, 3)]  # get all rows, and the first and third columns</code></pre>
+<pre><code>##        age gender
+## caleb   26      M
+## taylor  24      F</code></pre>
 <p>Indexing for vectors and matrices is extremely similar. As an
-exercise, index the following values from the below matrix, using the
-<code>c()</code> function if necessary.</p>
+exercise, index the following values from the below matrix with a
+<strong>single indexing operation</strong>, using the <code>c()</code>
+function if necessary.</p>
 <pre class="r"><code>m1 &lt;- matrix(1:20, nrow=4, byrow=T)
 m1</code></pre>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5]
@@ -1733,6 +1683,18 @@ m1</code></pre>
 # which is the 3rd row, 2nd column.
 m1[3, 2]</code></pre>
 <pre><code>## [1] 12</code></pre>
+<pre class="r"><code>m1[3,3]</code></pre>
+<pre><code>## [1] 13</code></pre>
+<pre class="r"><code>m1[1,]</code></pre>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
+<pre class="r"><code>m1[,4]</code></pre>
+<pre><code>## [1]  4  9 14 19</code></pre>
+<pre class="r"><code>m1[c(1,2),2]</code></pre>
+<pre><code>## [1] 2 7</code></pre>
+<pre class="r"><code>m1[c(1,4),c(1,3)]</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    3
+## [2,]   16   18</code></pre>
 </div>
 
 
