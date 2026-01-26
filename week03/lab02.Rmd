@@ -3,12 +3,12 @@ title: "PS0002 Lab 2 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
 date: "6 Feb 2025"
 output:
-  pdf_document:
-    df_print: tibble
-    template: ../eisvogel.latex
   html_document:
     toc: true
     toc_float: true
+  pdf_document:
+    df_print: tibble
+    template: ../eisvogel.latex
 toc: true
 toc-own-page: true
 numbersections: true
@@ -20,29 +20,35 @@ geometry:
 - bottom=25mm
 - headsep=4mm
 - footskip=10mm
+editor_options: 
+  markdown: 
+    wrap: 80
 ---
 
 # The `msleep` dataset
-This lab uses the `msleep` dataset, which you can download using the `download.file()` function and link below.
-Make sure that the link is on a single line, so that R can read the link properly.
-Alternatively, you may also navigate to the link and save the file directly to your computer.
+
+This lab uses the `msleep` dataset, which you can download using the
+`download.file()` function and link below. Make sure that the link is on a
+single line, so that R can read the link properly. Alternatively, you may also
+navigate to the link and save the file directly to your computer.
 
 ```{r eval=FALSE}
 download.file("https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/msleep_ggplot2.csv",
   destfile = "msleep_ggplot2.csv")
 ```
 
-Once downloaded, you need to import the data into R, with a use of one of the `read` functions.
-Which one? The lab sheet suggests `read.csv()`.
-How can you conclude by yourself what to use?
-Again, examine the data.
+Once downloaded, you need to import the data into R, with a use of one of the
+`read` functions. Which one? The lab sheet suggests `read.csv()`. How can you
+conclude by yourself what to use? Again, examine the data.
 
-In this case, the file provided has a `.csv` extension, short for *comma-separated values*.
-Opening the file, you can also see that each row corresponds to one observation, and each feature is separated by a comma.
-There is also a header row, so set the `header` parameter accordingly.
+In this case, the file provided has a `.csv` extension, short for
+*comma-separated values*. Opening the file, you can also see that each row
+corresponds to one observation, and each feature is separated by a comma. There
+is also a header row, so set the `header` parameter accordingly.
 
-In the previous lab, I also mentioned that `read.csv()` is the same as `read.table()`.
-You can in fact use `read.table()`, just change the `sep` parameter.
+In the previous lab, I also mentioned that `read.csv()` is the same as
+`read.table()`. You can in fact use `read.table()`, just change the `sep`
+parameter.
 
 ```{r}
 msleep <- read.csv("msleep_ggplot2.csv", header=T)  # equivalent to below
@@ -50,6 +56,7 @@ msleep <- read.table("msleep_ggplot2.csv", header=T, sep=",")
 ```
 
 ## Dimension (`dim()`), summary (`summary()`), and head (`head()`) of `msleep`
+
 The lab sheet asks us to use the following functions.
 
 ```{r}
@@ -60,23 +67,27 @@ head(msleep)
 
 From the `dim()` output, we can see that there are 83 rows and 11 columns.
 
-The output of `summary()` gives us some summary statistics of the data.
-You can see that it lists all the feature names, and where possible, numerical statistics on the feature.
-For example, `sleep_total` has a minimum of 1.9, a median of 10.10, a mean of 10.43, and a max of 19.90.
-For features that are names or characters (strings), `summary()` cannot provide a mean, median, etc. as those are numerical statistics.
+The output of `summary()` gives us some summary statistics of the data. You can
+see that it lists all the feature names, and where possible, numerical
+statistics on the feature. For example, `sleep_total` has a minimum of 1.9, a
+median of 10.10, a mean of 10.43, and a max of 19.90. For features that are
+names or characters (strings), `summary()` cannot provide a mean, median, etc.
+as those are numerical statistics.
 
 The `head()` function simply gives the first few rows of the passed data frame.
-You can optionally pass it a second number to explicitly determine how many rows from the top it should take.
-Again, you can see this information with the `?` operator.
+You can optionally pass it a second number to explicitly determine how many rows
+from the top it should take. Again, you can see this information with the `?`
+operator.
 
 ## Selecting features (`dplyr`'s `select()`)
-Most of these exercises are fairly simple.
-If you face an error doing this task, make sure you have imported `dplyr` with `library()`.
+
+Most of these exercises are fairly simple. If you face an error doing this task,
+make sure you have imported `dplyr` with `library()`.
 
 ```{r results='hide', warning=FALSE, message=FALSE}
 library('dplyr')
 select(msleep, name, sleep_total)
-select(msleep, -name:conservation)  # remove the character type data
+select(msleep, -(name:conservation))  # remove the character type data
 select(msleep, -(1:4))              # remove the first four columns
 msleep %>% select(sleep_total: awake)
 msleep %>% select(starts_with("sl"))
@@ -85,6 +96,7 @@ msleep %>% select(starts_with("sl"))
 Note the use of the pipe operator `%>%` is valid even with only a single verb.
 
 ## Filtering observations (`dplyr`'s `filter()`)
+
 Again, this is an exercise of specifying the criteria to filter by accurately.
 
 ```{r results='hide'}
@@ -94,9 +106,10 @@ msleep %>% filter(order %in% c("Perissodactyla", "Primates"))
 ```
 
 ## Pipe operator (`%>%`)
-The pipe operator allows for chaining of functions.
-It passes the left object as the first input of the right function.
-If you want to spread it across multiple lines, the pipe operator should be at the end of the line.
+
+The pipe operator allows for chaining of functions. It passes the left object as
+the first input of the right function. If you want to spread it across multiple
+lines, the pipe operator should be at the end of the line.
 
 ```{r results='hide'}
 msleep %>% select(name, sleep_total) %>%    # <- pipe operator must be here if line break
@@ -108,15 +121,17 @@ head(select(msleep, name, sleep_total), 6)
 ```
 
 ## Sorting data (`dplyr`'s `arrange()`)
+
 ```{r}
 msleep %>% select(order, sleep_total, brainwt) %>%
   arrange(sleep_total) %>% # desc(sleep_total) if required
   filter(sleep_total > 16)
 ```
 
-One thing to note about this chaining of operations is that the order of operations may matter for large datasets.
-In this case, it does not matter significantly whether the dataset is sorted or filtered first.
-One erroneous example, where sorting by an unselected feature causes an error:
+One thing to note about this chaining of operations is that the order of
+operations may matter for large datasets. In this case, it does not matter
+significantly whether the dataset is sorted or filtered first. One erroneous
+example, where sorting by an unselected feature causes an error:
 
 ```{r eval=FALSE}
 # cannot sort by brainwt, since select(msleep, sleep_total)
@@ -125,6 +140,6 @@ msleep %>% select(sleep_total) %>%
   arrange(brainwt)
 ```
 
-In general, if you face an unexpected error or output,
-**break down your data pipeline and see the output after each step**.
-That should give you a good idea of where your code went wrong.
+In general, if you face an unexpected error or output, **break down your data
+pipeline and see the output after each step**. That should give you a good idea
+of where your code went wrong.

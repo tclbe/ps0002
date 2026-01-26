@@ -1,7 +1,7 @@
 ---
 title: "PS0002 Tut 2 Notes"
 author: "Caleb Tay (caleb.tay@ntu.edu.sg)"
-date: "3 Feb 2025"
+date: "26 Jan 2026"
 output:
   pdf_document:
     df_print: tibble
@@ -24,22 +24,24 @@ header-includes:
    - \usepackage{eso-pic,graphicx,transparent}
 editor_options: 
   markdown: 
-    wrap: sentence
+    wrap: 80
 ---
 
 # R Packages (libraries)
 
-Packages in R can extend the capabilities of R, or provide datasets for us to test models against.
-They extend R's functionality by writing custom functions.
+Packages in R can extend the capabilities of R, or provide datasets for us to
+test models against. They extend R's functionality by writing custom functions.
 Again, we will not focus on writing functions in R, but only on using them well.
 
 ## Installation
 
-In this tutorial, we need two packages, `dplyr` (I call it 'deployer') and `nycflights13`.
-To install them, we can run the `install.packages()` function, with the name of the package we want to install.
-If the package was already installed, R will attempt to update it.
+In this tutorial, we need two packages, `dplyr` (I call it 'deployer') and
+`nycflights13`. To install them, we can run the `install.packages()` function,
+with the name of the package we want to install. If the package was already
+installed, R will attempt to update it.
 
-Alternatively, you may use RStudio's interface, finding the 'Packages' tab or navigating to Tools \> Install Packages in the menu bar.
+Alternatively, you may use RStudio's interface, finding the 'Packages' tab or
+navigating to Tools \> Install Packages in the menu bar.
 
 ```{r eval=FALSE}
 install.packages("dplyr")
@@ -56,52 +58,73 @@ library("dplyr")
 library("nycflights13")
 ```
 
-Make sure you have loaded these two packages in to R before moving on with the rest of this tutorial.
+Make sure you have loaded these two packages in to R before moving on with the
+rest of this tutorial.
 
 ## The `nycflights13` package
 
-The `nycflights13` package provides us with some data, the details of which are mentioned in the tutorial sheet.
-Apart from that, it does not extend R's functionality.
-When we loaded it in with `library()`, it should have added a variable `flights` (among others) to the environment.
-We will look at this dataset for this tutorial.
+The `nycflights13` package provides us with some data, the details of which are
+mentioned in the tutorial sheet. Apart from that, it does not extend R's
+functionality. When we loaded it in with `library()`, it should have added a
+variable `flights` (among others) to the environment. We will look at this
+dataset for this tutorial.
 
 # The `dplyr` package
 
-The `dplyr` package provides helpful functions ('verbs') that will allow us to more easily wrangle (manipulate) our data.
-In the last tutorial, we did a lot of things with the indexing operation with square brackets.
-`dplyr` abstracts these indexing operations into several different functions.
-For this week, we will see:
+The `dplyr` package provides helpful functions ('verbs') that will allow us to
+more easily wrangle (manipulate) our data. In the last tutorial, we did a lot of
+things with the indexing operation with square brackets. `dplyr` abstracts these
+indexing operations into several different functions. For this week, we will
+see:
 
 1.  `select()`, to select columns/features of interest
 2.  `filter()`, to filter out observations based on some criteria
 3.  `arrange()`, to sort observations based on a column/feature
-4.  `%>%`, the **pipe operator**, which chains together these `dplyr` operations.
+4.  `%>%`, the **pipe operator**, which chains together these `dplyr`
+    operations.
 
 ## Selecting features (`select()`)
 
-Usually in datasets, there are many columns/features that we are not interested in.
-We can examine the structure of the `flights` dataset with the `str()` function, and see that there are 19 variables.
+Usually in datasets, there are many columns/features that we are not interested
+in. We can examine the structure of the `flights` dataset with the `str()`
+function, and see that there are 336k rows of 19 variables.
 
 ```{r}
 str(flights)
 ```
 
-Usually, we want to narrow down the features to a smaller subset, and we will do so using `dplyr`'s `select()` function.
-Again, you can use the `?` operator to see a function's documentation and usage.
-In general, all `dplyr` verbs (functions) will take the dataset we want it to act on as the first argument.
+Usually, we want to narrow down the features to a smaller subset, and we will do
+so using `dplyr`'s `select()` function. Again, you can use the `?` operator to
+see a function's documentation and usage. Some examples should show how
+`select()` is used:
 
-You may follow the code provided in the tutorial sheet.
-As an exercise, use the `select()` function to select all columns that contain the letter `'c'`.
-(`r ncol(select(flights, contains('c')))` columns)
+```{r, eval=FALSE}
+select(flights, year, month, day)
+select(flights, year:day)     # select all columns between year and day
+select(flights, -(year:day))  # select all columns EXCEPT those between year and day
+select(flights, !(year:day))  # same as above
+```
+
+In general, all `dplyr` verbs (functions) will take the dataset we want it to
+act on as the first argument.
+
+There are also some functions that help us select columns based on their name:
+`starts_with()`, `ends_with()`, `contains()`, `matches()`, `any_of()`.
+
+As an exercise, use the `select()` function to select all columns that contain
+the letter `'c'`. (`r ncol(select(flights, contains('c')))` columns)
 
 ## Filtering observations (`filter()`)
 
-Filtering observations is what we did in the previous tutorial, when we filtered based on gender, for example.
-`dplyr` provides simpler syntax for filtering than the indexing done with square brackets `[]`, and the ideas are largely the same.
+Filtering observations is what we did in the previous tutorial, when we filtered
+based on gender, for example. `dplyr` provides simpler syntax for filtering than
+the indexing done with square brackets `[]`, and the ideas are largely the same.
 
-To use `filter()`, we must specify the criteria that we want to filter by, which evaluates to a `TRUE` or `FALSE` result.
+To use `filter()`, we must specify the criteria that we want to filter by, which
+evaluates to a `TRUE` or `FALSE` result.
 
-For example, we could filter for all flights from `JFK` to `LAX` by specifying two conditions:
+For example, we could filter for all flights from `JFK` to `LAX` by specifying
+two conditions:
 
 ```{r eval=FALSE}
 # origin and dest referring to the columns in flights
@@ -120,9 +143,10 @@ filter(flights, origin=="JFK" | dest=="LAX")
 
 ### The `%in%`operator
 
-If we are interested in several values of a feature, we can use the `%in%` operator.
-Simply put, it checks if the values to the left of `%in%` are *any* of the values to the right of `%in%`.
-For example, if we were interested in flights departing from JFK or LGA, we can do it in two equivalent ways.
+If we are interested in several values of a feature, we can use the `%in%`
+operator. Simply put, it checks if the values to the left of `%in%` are *any* of
+the values to the right of `%in%`. For example, if we were interested in flights
+departing from JFK or LGA, we can do it in two equivalent ways.
 
 ```{r eval=FALSE}
 filter(flights, origin == "JFK" | origin == "LGA")
@@ -131,10 +155,12 @@ filter(flights, origin %in% c("JFK", "LGA"))
 
 ## Sorting observations (`arrange()`)
 
-This is similar to using the `order()` function to sort observations.
-In this case, to reverse the sorting, we just need to wrap the feature we want to sort by in a `desc()` function (`desc` for *desc*ending).
+This is similar to using the `order()` function to sort observations. In this
+case, to reverse the sorting, we just need to wrap the feature we want to sort
+by in a `desc()` function (`desc` for *desc*ending).
 
-For example, we want to order flights by their departure delay to see the worst delayed flights.
+For example, we want to order flights by their departure delay to see the worst
+delayed flights.
 
 ```{r}
 arrange(flights, desc(dep_delay))
@@ -143,14 +169,17 @@ arrange(flights, desc(dep_delay))
 
 ## The pipe operator (`%>%`)
 
-The pipe operator is a functionality built in to `dplyr`.
-To use it, you must import `dplyr`.
+The pipe operator is a functionality imported with `dplyr`. To use it, you must
+import `dplyr`.
 
-The pipe operator allows for quick passing of the output of one function as the input of another.
-Since `dplyr` verbs all take the data frame we want to act on as the first argument, we can think of the pipe operator `%>%` passing the output of a function as the first argument of the next function.
+The pipe operator allows for quick passing of the output of one function as the
+input of another. Since `dplyr` verbs all take the data frame we want to act on
+as the first argument, we can think of the pipe operator `%>%` passing the
+output of a function as the first argument of the next function.
 
-This allows for chaining of operations in a very natural language manner using `dplyr`.
-For example, we are interested in only the longest distance flights flown by AA or UA in January, which requires both a filtering and selection.
+This allows for chaining of operations in a very natural language manner using
+`dplyr`. For example, we are interested in only the longest distance flights
+flown by AA or UA in January, which requires both a filtering and selection.
 
 ```{r eval=F}
 filter(flights, carrier %in% c("AA", "UA"), month == 1) %>%
@@ -165,18 +194,30 @@ filter(flights, carrier %in% c("AA", "UA"), month == 1) %>%
 # desc(distance))
 ```
 
-There is a very natural language interpretation to the data process when we use the pipe operator.
-Take the dataframe `flights`, and filter based on some criteria.
-Then, select the columns specified, and finally sort in descending order of distance.
+There is a very natural language interpretation to the data process when we use
+the pipe operator. Take the dataframe `flights`, and filter based on some
+criteria. Then, select the columns specified, and finally sort in descending
+order of distance.
 
-We call this entire process of performing several steps for a specific purpose is known as a **data pipeline**.
+We call this entire process of performing several steps for a specific purpose a
+**data pipeline**.
 
-One thing to note is that using the pipe operator `%>%` discard all intermediate results.
-Thus, if something is wrong in your final result, you may want to check whether something went wrong in each step of the process.
+One thing to note is that using the pipe operator `%>%` discard all intermediate
+results. Thus, if something is wrong in your final result, you may want to check
+whether something went wrong in each step of the process.
 
 Several exercises: As an exercise:
 
-1.  Get all flights with a departure delay more than 30 minutes departing from JFK airport. (`r nrow(filter(flights, dep_delay > 30, origin=="JFK"))` rows)
-2.  Get all flights departing **or** arriving **between** 12pm and 2pm, **and** operated by either AA **or** UA. (`r nrow(filter(flights, between(dep_time, 1200, 1400) | between(arr_time, 1200, 1400), carrier %in% c("AA", "UA")))` rows). You may want to use `between()` function (use `?`) and the `%in%` operator (detailed briefly in the tutorial sheet).
-3.  Get flights originating from JFK and departing before 8am, and order it based on airtime. (`r nrow(filter(flights, origin=="JFK", dep_time < 800))` rows)
-4.  Get flights that have a departure delay more than 30 minutes with a distance less than 2000. (`r nrow(filter(flights, dep_delay > 30, distance < 2000))` rows)
+1.  Get all flights with a departure delay more than 30 minutes departing from
+    JFK airport. (`r nrow(filter(flights, dep_delay > 30, origin=="JFK"))` rows)
+2.  Get all flights departing **or** arriving **between** 12pm and 2pm, **and**
+    operated by either AA **or** UA.
+    (`r nrow(filter(flights, between(dep_time, 1200, 1400) | between(arr_time, 1200, 1400), carrier %in% c("AA", "UA")))`
+    rows). You may want to use `between()` function (use `?`) and the `%in%`
+    operator (detailed briefly in the tutorial sheet).
+3.  Get flights originating from JFK and departing before 8am, and order it
+    based on airtime. (`r nrow(filter(flights, origin=="JFK", dep_time < 800))`
+    rows)
+4.  Get flights that have a departure delay more than 30 minutes with a distance
+    less than 2000. (`r nrow(filter(flights, dep_delay > 30, distance < 2000))`
+    rows)

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Caleb Tay (caleb.tay@ntu.edu.sg)" />
 
-<meta name="date" content="2025-01-24" />
+<meta name="date" content="2026-01-26" />
 
 <title>PS0002 Tut 2 Notes</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">PS0002 Tut 2 Notes</h1>
 <h4 class="author">Caleb Tay (<a href="mailto:caleb.tay@ntu.edu.sg" class="email">caleb.tay@ntu.edu.sg</a>)</h4>
-<h4 class="date">24 Jan 2025</h4>
+<h4 class="date">26 Jan 2026</h4>
 
 </div>
 
@@ -1554,8 +1554,8 @@ chains together these <code>dplyr</code> operations.</li>
 <h2>Selecting features (<code>select()</code>)</h2>
 <p>Usually in datasets, there are many columns/features that we are not
 interested in. We can examine the structure of the <code>flights</code>
-dataset with the <code>str()</code> function, and see that there are 19
-variables.</p>
+dataset with the <code>str()</code> function, and see that there are
+336k rows of 19 variables.</p>
 <pre class="r"><code>str(flights)</code></pre>
 <pre><code>## tibble [336,776 × 19] (S3: tbl_df/tbl/data.frame)
 ##  $ year          : int [1:336776] 2013 2013 2013 2013 2013 2013 2013 2013 2013 2013 ...
@@ -1580,12 +1580,20 @@ variables.</p>
 <p>Usually, we want to narrow down the features to a smaller subset, and
 we will do so using <code>dplyr</code>’s <code>select()</code> function.
 Again, you can use the <code>?</code> operator to see a function’s
-documentation and usage. In general, all <code>dplyr</code> verbs
-(functions) will take the dataset we want it to act on as the first
-argument.</p>
-<p>You may follow the code provided in the tutorial sheet. As an
-exercise, use the <code>select()</code> function to select all columns
-that contain the letter <code>&#39;c&#39;</code>. (4 columns)</p>
+documentation and usage. Some examples should show how
+<code>select()</code> is used:</p>
+<pre class="r"><code>select(flights, year, month, day)
+select(flights, year:day)     # select all columns between year and day
+select(flights, -(year:day))  # select all columns EXCEPT those between year and day
+select(flights, !(year:day))  # same as above</code></pre>
+<p>In general, all <code>dplyr</code> verbs (functions) will take the
+dataset we want it to act on as the first argument.</p>
+<p>There are also some functions that help us select columns based on
+their name: <code>starts_with()</code>, <code>ends_with()</code>,
+<code>contains()</code>, <code>matches()</code>,
+<code>any_of()</code>.</p>
+<p>As an exercise, use the <code>select()</code> function to select all
+columns that contain the letter <code>&#39;c&#39;</code>. (4 columns)</p>
 </div>
 <div id="filtering-observations-filter" class="section level2">
 <h2>Filtering observations (<code>filter()</code>)</h2>
@@ -1651,8 +1659,8 @@ the worst delayed flights.</p>
 </div>
 <div id="the-pipe-operator" class="section level2">
 <h2>The pipe operator (<code>%&gt;%</code>)</h2>
-<p>The pipe operator is a functionality built in to <code>dplyr</code>.
-To use it, you must import <code>dplyr</code>.</p>
+<p>The pipe operator is a functionality imported with
+<code>dplyr</code>. To use it, you must import <code>dplyr</code>.</p>
 <p>The pipe operator allows for quick passing of the output of one
 function as the input of another. Since <code>dplyr</code> verbs all
 take the data frame we want to act on as the first argument, we can
@@ -1677,7 +1685,7 @@ when we use the pipe operator. Take the dataframe <code>flights</code>,
 and filter based on some criteria. Then, select the columns specified,
 and finally sort in descending order of distance.</p>
 <p>We call this entire process of performing several steps for a
-specific purpose is known as a <strong>data pipeline</strong>.</p>
+specific purpose a <strong>data pipeline</strong>.</p>
 <p>One thing to note is that using the pipe operator <code>%&gt;%</code>
 discard all intermediate results. Thus, if something is wrong in your
 final result, you may want to check whether something went wrong in each
