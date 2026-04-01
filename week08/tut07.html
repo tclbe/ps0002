@@ -11,7 +11,7 @@
 
 <meta name="author" content="Caleb Tay (caleb.tay@ntu.edu.sg)" />
 
-<meta name="date" content="2026-03-20" />
+<meta name="date" content="2026-03-31" />
 
 <title>PS0002 Tut 7 Notes</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">PS0002 Tut 7 Notes</h1>
 <h4 class="author">Caleb Tay (<a href="mailto:caleb.tay@ntu.edu.sg" class="email">caleb.tay@ntu.edu.sg</a>)</h4>
-<h4 class="date">20 Mar 2026</h4>
+<h4 class="date">31 Mar 2026</h4>
 
 </div>
 
@@ -1835,10 +1835,11 @@ for the false negative rate (FNR), we consider the true number of
 positive observation.</p>
 <p><span class="math display">\[
 \textrm{FPR} = \frac{\textrm{FP}}{\textrm{TN} + \textrm{FP}}
-= \frac{\textrm{FP}}{\textrm{number of observed positive classes}}
-\\
+= \frac{\textrm{FP}}{\textrm{number of observed negative classes}}
+\]</span></p>
+<p><span class="math display">\[
 \textrm{FNR} = \frac{\textrm{FN}}{\textrm{TP} + \textrm{FN}}
-= \frac{\textrm{FN}}{\textrm{number of observed negative classes}}
+= \frac{\textrm{FN}}{\textrm{number of observed positive classes}}
 \]</span></p>
 <p>Here, we have a false positive rate of <span class="math inline">\(4
 / 86 = 4.76\%\)</span>, indicating that we inaccurately tell 4.76% of
@@ -1873,7 +1874,7 @@ and where it fails.</p>
 known as sensitivity, which is defined as:</p>
 <p><span class="math display">\[
 \textrm{Recall} = \frac{\textrm{TP}}{\textrm{TP + FN}}
-= \frac{\textrm{TP}}{\textrm{number of observed true classes}}
+= \frac{\textrm{TP}}{\textrm{number of observed positive classes}}
 = 1 - \textrm{FNR}
 \]</span></p>
 <p>In the context of this dataset, we have <span class="math inline">\(47 / 51 = 92.2\%\)</span>, indicating we correctly
